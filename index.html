@@ -1,2 +1,343 @@
-<div>Hello world</div>
-<div>DevilJO</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevilJO | Poetry & Photography</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Site navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">D</div>
+        <div>
+          <p class="brand-title">DevilJO</p>
+          <p class="brand-kicker">Poetry & Photography</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#studio"><i data-lucide="pen-line" aria-hidden="true"></i><span>Studio</span></a>
+        <a href="#collection"><i data-lucide="images" aria-hidden="true"></i><span>Collection</span></a>
+        <a href="#collection" data-nav-filter="poem"><i data-lucide="book-open" aria-hidden="true"></i><span>Poetry</span></a>
+        <a href="#collection" data-nav-filter="photo"><i data-lucide="camera" aria-hidden="true"></i><span>Photos</span></a>
+      </nav>
+      <p class="sidebar-note">"What stays after the moment leaves is the image, the line, and the nerve to share both."</p>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div class="search">
+          <i data-lucide="search" aria-hidden="true"></i>
+          <input id="searchInput" type="search" placeholder="Search titles, lines, locations, tags" aria-label="Search content">
+        </div>
+        <div class="actions">
+          <button class="ghost-button" id="clearButton" type="button">
+            <i data-lucide="sparkles" aria-hidden="true"></i>
+            Reset
+          </button>
+          <a class="primary-button" href="#studio">
+            <i data-lucide="plus" aria-hidden="true"></i>
+            Create
+          </a>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="intro" aria-label="Creative studio">
+          <article class="feature">
+            <img src="https://images.unsplash.com/photo-1496449903678-68ddcb189a24?auto=format&fit=crop&w=1400&q=80" alt="Notebook with handwritten poetry beside a camera">
+            <div class="feature-copy">
+              <h1>DevilJO</h1>
+              <p>A quiet digital studio for original poems, photo essays, field notes, and the small beautiful evidence of being alive.</p>
+            </div>
+          </article>
+
+          <section class="composer" id="studio" aria-labelledby="composerTitle">
+            <div class="section-title">
+              <h2 id="composerTitle">New piece</h2>
+              <div class="segmented" aria-label="Post type">
+                <button class="active" type="button" data-type="poem">Poem</button>
+                <button type="button" data-type="photo">Photo</button>
+              </div>
+            </div>
+
+            <form class="form-grid" id="postForm">
+              <label>
+                Title
+                <input id="titleInput" name="title" required maxlength="80" placeholder="Monsoon at the window">
+              </label>
+              <div class="form-row">
+                <label>
+                  Author
+                  <input id="authorInput" name="author" maxlength="40" placeholder="DevilJO">
+                </label>
+                <label>
+                  Tags
+                  <input id="tagsInput" name="tags" maxlength="80" placeholder="rain, memory, street">
+                </label>
+              </div>
+              <label id="imageField" hidden>
+                Photo URL
+                <input id="imageInput" name="image" type="url" placeholder="https://images.unsplash.com/...">
+              </label>
+              <label>
+                Text
+                <textarea id="bodyInput" name="body" required maxlength="700" placeholder="Write the poem, caption, or field note."></textarea>
+              </label>
+              <button class="primary-button" type="submit">
+                <i data-lucide="send" aria-hidden="true"></i>
+                Publish
+              </button>
+            </form>
+          </section>
+        </section>
+
+        <section id="collection" aria-labelledby="collectionTitle">
+          <div class="toolbar">
+            <div>
+              <h2 id="collectionTitle" class="collection-heading">Collection</h2>
+              <p class="collection-subtitle">Poems, frames, and fragments in one living archive.</p>
+            </div>
+            <div class="filters" aria-label="Content filters">
+              <button class="filter active" type="button" data-filter="all">All</button>
+              <button class="filter" type="button" data-filter="poem" id="poetry">Poetry</button>
+              <button class="filter" type="button" data-filter="photo" id="photos">Photography</button>
+            </div>
+          </div>
+
+          <div class="grid" id="postGrid"></div>
+          <div class="empty" id="emptyState">No pieces match this search.</div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "deviljo-posts";
+    const fallbackPhoto = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
+    const samples = [
+      {
+        id: "sample-1",
+        type: "poem",
+        title: "After the Rain",
+        author: "DevilJO",
+        body: "The road keeps every cloud\nin broken silver pieces.\nI walk home slower,\nletting the city remember me.",
+        tags: ["rain", "city", "memory"],
+        createdAt: "2026-05-04"
+      },
+      {
+        id: "sample-2",
+        type: "photo",
+        title: "Window Light",
+        author: "DevilJO",
+        body: "Late afternoon folding itself over a desk, a notebook, and the patience of an unfinished line.",
+        tags: ["light", "desk", "quiet"],
+        image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
+        createdAt: "2026-05-04"
+      },
+      {
+        id: "sample-3",
+        type: "photo",
+        title: "Blue Hour Street",
+        author: "DevilJO",
+        body: "A frame for the exact second the city stops pretending it is only concrete.",
+        tags: ["street", "blue hour", "travel"],
+        image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80",
+        createdAt: "2026-05-04"
+      },
+      {
+        id: "sample-4",
+        type: "poem",
+        title: "Small Fire",
+        author: "DevilJO",
+        body: "Do not ask the candle\nwhy it leans toward the dark.\nEven a little flame\nknows where it is needed.",
+        tags: ["hope", "night", "voice"],
+        createdAt: "2026-05-04"
+      }
+    ];
+
+    const state = {
+      type: "poem",
+      filter: "all",
+      query: "",
+      posts: loadPosts()
+    };
+
+    const form = document.querySelector("#postForm");
+    const grid = document.querySelector("#postGrid");
+    const emptyState = document.querySelector("#emptyState");
+    const searchInput = document.querySelector("#searchInput");
+    const imageField = document.querySelector("#imageField");
+    const imageInput = document.querySelector("#imageInput");
+
+    function loadPosts() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        return samples;
+      }
+
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return samples;
+      }
+    }
+
+    function createId() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return window.crypto.randomUUID();
+      }
+
+      return `post-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function savePosts() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.posts));
+    }
+
+    function setType(type) {
+      state.type = type;
+      imageField.hidden = type !== "photo";
+      imageInput.required = type === "photo";
+      document.querySelectorAll("[data-type]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.type === type);
+      });
+    }
+
+    function setFilter(filter) {
+      state.filter = filter;
+      document.querySelectorAll("[data-filter]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.filter === filter);
+      });
+      renderPosts();
+    }
+
+    function normalizeTags(value) {
+      return value
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+        .slice(0, 5);
+    }
+
+    function postMatches(post) {
+      const filterMatch = state.filter === "all" || post.type === state.filter;
+      const haystack = [
+        post.title,
+        post.author,
+        post.body,
+        ...(post.tags || [])
+      ].join(" ").toLowerCase();
+      return filterMatch && haystack.includes(state.query.toLowerCase());
+    }
+
+    function renderPosts() {
+      const visiblePosts = state.posts.filter(postMatches);
+      grid.innerHTML = visiblePosts.map(toCard).join("");
+      emptyState.classList.toggle("visible", visiblePosts.length === 0);
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function toCard(post) {
+      const tags = (post.tags || [])
+        .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
+        .join("");
+      const media = post.type === "photo"
+        ? `<div class="card-media"><img src="${escapeHtml(post.image || fallbackPhoto)}" alt="${escapeHtml(post.title)}"></div>`
+        : "";
+      const icon = post.type === "photo" ? "camera" : "book-open";
+
+      return `
+        <article class="card ${post.type}">
+          ${media}
+          <div class="card-body">
+            <div class="meta">
+              <span><i data-lucide="${icon}" aria-hidden="true"></i> ${post.type === "photo" ? "Photo" : "Poem"}</span>
+              <span>${escapeHtml(post.author || "DevilJO")}</span>
+            </div>
+            <h3>${escapeHtml(post.title)}</h3>
+            <p class="excerpt">${escapeHtml(post.body)}</p>
+            <div class="tags">${tags}</div>
+          </div>
+        </article>
+      `;
+    }
+
+    document.querySelectorAll("[data-type]").forEach((button) => {
+      button.addEventListener("click", () => setType(button.dataset.type));
+    });
+
+    document.querySelectorAll("[data-filter]").forEach((button) => {
+      button.addEventListener("click", () => setFilter(button.dataset.filter));
+    });
+
+    document.querySelectorAll("[data-nav-filter]").forEach((link) => {
+      link.addEventListener("click", () => setFilter(link.dataset.navFilter));
+    });
+
+    searchInput.addEventListener("input", (event) => {
+      state.query = event.target.value.trim();
+      renderPosts();
+    });
+
+    document.querySelector("#clearButton").addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      state.posts = samples;
+      state.query = "";
+      state.filter = "all";
+      searchInput.value = "";
+      setFilter("all");
+      form.reset();
+      setType("poem");
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const post = {
+        id: createId(),
+        type: state.type,
+        title: String(formData.get("title")).trim(),
+        author: String(formData.get("author")).trim() || "DevilJO",
+        body: String(formData.get("body")).trim(),
+        tags: normalizeTags(String(formData.get("tags") || "")),
+        createdAt: new Date().toISOString()
+      };
+
+      if (state.type === "photo") {
+        post.image = String(formData.get("image")).trim() || fallbackPhoto;
+      }
+
+      state.posts = [post, ...state.posts];
+      savePosts();
+      form.reset();
+      setType("poem");
+      setFilter("all");
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      setType("poem");
+      renderPosts();
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>

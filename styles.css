@@ -1,3 +1,8 @@
+/*
+  DevilJO website styles
+  Edit colors in :root and layout sections below to customize the site.
+*/
+
 :root {
   --ink: #191714;
   --muted: #6e6a61;

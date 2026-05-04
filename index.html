@@ -54,12 +54,25 @@
             <div class="feature-copy">
               <h1>DevilJO</h1>
               <p>A quiet digital studio for original poems, photo essays, field notes, and the small beautiful evidence of being alive.</p>
+              <div class="hero-actions">
+                <a class="primary-button" href="#studio">
+                  <i data-lucide="pen-line" aria-hidden="true"></i>
+                  Start writing
+                </a>
+                <a class="ghost-button light" href="#collection">
+                  <i data-lucide="images" aria-hidden="true"></i>
+                  Browse archive
+                </a>
+              </div>
             </div>
           </article>
 
           <section class="composer" id="studio" aria-labelledby="composerTitle">
             <div class="section-title">
-              <h2 id="composerTitle">New piece</h2>
+              <div>
+                <p class="eyebrow">Creative studio</p>
+                <h2 id="composerTitle">New piece</h2>
+              </div>
               <div class="segmented" aria-label="Post type">
                 <button class="active" type="button" data-type="poem">Poem</button>
                 <button type="button" data-type="photo">Photo</button>
@@ -81,23 +94,67 @@
                   <input id="tagsInput" name="tags" maxlength="80" placeholder="rain, memory, street">
                 </label>
               </div>
-              <label id="imageField" hidden>
-                Photo URL
-                <input id="imageInput" name="image" type="url" placeholder="https://images.unsplash.com/...">
-              </label>
+              <div class="photo-fields" id="imageField">
+                <label>
+                  Photo URL
+                  <input id="imageInput" name="image" type="url" placeholder="https://images.unsplash.com/...">
+                </label>
+                <label>
+                  Local attachment
+                  <input id="imageUploadInput" name="imageUpload" type="file" accept="image/*">
+                  <span class="field-help" id="attachmentHelp"></span>
+                </label>
+              </div>
               <label>
                 Text
                 <textarea id="bodyInput" name="body" required maxlength="700" placeholder="Write the poem, caption, or field note."></textarea>
+                <span class="field-help"><span id="bodyCount">0</span>/700 characters</span>
               </label>
-              <button class="primary-button" type="submit">
-                <i data-lucide="send" aria-hidden="true"></i>
-                Publish
-              </button>
+              <div class="form-actions">
+                <button class="ghost-button" id="promptButton" type="button">
+                  <i data-lucide="wand-sparkles" aria-hidden="true"></i>
+                  Prompt
+                </button>
+                <button class="primary-button" type="submit">
+                  <i data-lucide="send" aria-hidden="true"></i>
+                  Publish
+                </button>
+              </div>
             </form>
+
+            <aside class="preview" aria-label="Live post preview">
+              <div class="preview-top">
+                <span id="previewType">Poem preview</span>
+                <i data-lucide="eye" aria-hidden="true"></i>
+              </div>
+              <div class="preview-image" id="previewImage" hidden>
+                <img id="previewImageElement" alt="Selected photo preview">
+              </div>
+              <h3 id="previewTitle">Your title will appear here</h3>
+              <p id="previewBody">Start typing to see a live preview of your piece.</p>
+              <div class="tags" id="previewTags">
+                <span class="tag">draft</span>
+              </div>
+            </aside>
           </section>
         </section>
 
         <section id="collection" aria-labelledby="collectionTitle">
+          <div class="stats" aria-label="Archive summary">
+            <div>
+              <span id="totalCount">0</span>
+              <p>Total pieces</p>
+            </div>
+            <div>
+              <span id="poemCount">0</span>
+              <p>Poems</p>
+            </div>
+            <div>
+              <span id="photoCount">0</span>
+              <p>Photos</p>
+            </div>
+          </div>
+
           <div class="toolbar">
             <div>
               <h2 id="collectionTitle" class="collection-heading">Collection</h2>
@@ -116,10 +173,17 @@
       </div>
     </main>
   </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
     const STORAGE_KEY = "deviljo-posts";
     const fallbackPhoto = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
+    const prompts = [
+      "Write about a place that changed after rain.",
+      "Describe a shadow that felt like a memory.",
+      "Capture the first sound you noticed this morning.",
+      "Write a caption for light falling across an ordinary object."
+    ];
     const samples = [
       {
         id: "sample-1",
@@ -165,6 +229,7 @@
       type: "poem",
       filter: "all",
       query: "",
+      pendingImage: "",
       posts: loadPosts()
     };
 
@@ -174,6 +239,23 @@
     const searchInput = document.querySelector("#searchInput");
     const imageField = document.querySelector("#imageField");
     const imageInput = document.querySelector("#imageInput");
+    const imageUploadInput = document.querySelector("#imageUploadInput");
+    const attachmentHelp = document.querySelector("#attachmentHelp");
+    const titleInput = document.querySelector("#titleInput");
+    const authorInput = document.querySelector("#authorInput");
+    const tagsInput = document.querySelector("#tagsInput");
+    const bodyInput = document.querySelector("#bodyInput");
+    const bodyCount = document.querySelector("#bodyCount");
+    const previewType = document.querySelector("#previewType");
+    const previewImage = document.querySelector("#previewImage");
+    const previewImageElement = document.querySelector("#previewImageElement");
+    const previewTitle = document.querySelector("#previewTitle");
+    const previewBody = document.querySelector("#previewBody");
+    const previewTags = document.querySelector("#previewTags");
+    const toast = document.querySelector("#toast");
+    const totalCount = document.querySelector("#totalCount");
+    const poemCount = document.querySelector("#poemCount");
+    const photoCount = document.querySelector("#photoCount");
 
     function loadPosts() {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -197,16 +279,22 @@
     }
 
     function savePosts() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.posts));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.posts));
+        return true;
+      } catch {
+        showToast("Browser storage is full. Try a smaller attachment.");
+        return false;
+      }
     }
 
     function setType(type) {
       state.type = type;
-      imageField.hidden = type !== "photo";
-      imageInput.required = type === "photo";
+      imageField.classList.toggle("is-muted", type !== "photo");
       document.querySelectorAll("[data-type]").forEach((button) => {
         button.classList.toggle("active", button.dataset.type === type);
       });
+      updatePreview();
     }
 
     function setFilter(filter) {
@@ -240,13 +328,136 @@
       const visiblePosts = state.posts.filter(postMatches);
       grid.innerHTML = visiblePosts.map(toCard).join("");
       emptyState.classList.toggle("visible", visiblePosts.length === 0);
+      renderStats();
       if (window.lucide) {
         window.lucide.createIcons();
       }
     }
 
+    function renderStats() {
+      const poems = state.posts.filter((post) => post.type === "poem").length;
+      const photos = state.posts.filter((post) => post.type === "photo").length;
+      totalCount.textContent = state.posts.length;
+      poemCount.textContent = poems;
+      photoCount.textContent = photos;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("visible");
+      window.clearTimeout(showToast.timeout);
+      showToast.timeout = window.setTimeout(() => {
+        toast.classList.remove("visible");
+      }, 2200);
+    }
+
+    function updatePreview() {
+      const title = titleInput.value.trim() || "Your title will appear here";
+      const body = bodyInput.value.trim() || "Start typing to see a live preview of your piece.";
+      const tags = normalizeTags(tagsInput.value);
+      const photoSource = getDraftImage();
+      bodyCount.textContent = bodyInput.value.length;
+      previewType.textContent = state.type === "photo" ? "Photo preview" : "Poem preview";
+      previewImage.hidden = state.type !== "photo" || !photoSource;
+      previewImageElement.src = photoSource || "";
+      previewTitle.textContent = title;
+      previewBody.textContent = body;
+      previewTags.innerHTML = (tags.length ? tags : ["draft"])
+        .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
+        .join("");
+    }
+
+    function getDraftImage() {
+      return state.pendingImage || imageInput.value.trim();
+    }
+
+    function clearAttachment() {
+      state.pendingImage = "";
+      attachmentHelp.textContent = "";
+    }
+
+    function readAttachment(file) {
+      if (!file) {
+        clearAttachment();
+        updatePreview();
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        imageUploadInput.value = "";
+        clearAttachment();
+        updatePreview();
+        showToast("Please choose an image file.");
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        imageUploadInput.value = "";
+        clearAttachment();
+        updatePreview();
+        showToast("Choose an image under 2 MB for browser storage.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        imageInput.value = "";
+        state.pendingImage = String(reader.result || "");
+        attachmentHelp.textContent = file.name;
+        updatePreview();
+        showToast("Local photo attached.");
+      });
+      reader.addEventListener("error", () => {
+        clearAttachment();
+        updatePreview();
+        showToast("Could not read that image.");
+      });
+      reader.readAsDataURL(file);
+    }
+
+    function findPost(id) {
+      return state.posts.find((post) => post.id === id);
+    }
+
+    function deletePost(id) {
+      const post = findPost(id);
+      if (!post || !window.confirm(`Delete "${post.title}" from the archive?`)) {
+        return;
+      }
+
+      state.posts = state.posts.filter((item) => item.id !== id);
+      savePosts();
+      renderPosts();
+      showToast("Piece deleted.");
+    }
+
+    function toggleLike(id) {
+      state.posts = state.posts.map((post) => (
+        post.id === id ? { ...post, liked: !post.liked } : post
+      ));
+      savePosts();
+      renderPosts();
+    }
+
+    function copyPost(id) {
+      const post = findPost(id);
+      if (!post) {
+        return;
+      }
+
+      const text = `${post.title}\nby ${post.author || "DevilJO"}\n\n${post.body}`;
+      if (!navigator.clipboard) {
+        showToast("Copy is unavailable in this browser.");
+        return;
+      }
+
+      navigator.clipboard.writeText(text)
+        .then(() => showToast("Copied to clipboard."))
+        .catch(() => showToast("Copy is unavailable in this browser."));
+    }
+
     function escapeHtml(value) {
-      return value.replace(/[&<>"']/g, (char) => ({
+      return String(value || "").replace(/[&<>"']/g, (char) => ({
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
@@ -263,9 +474,11 @@
         ? `<div class="card-media"><img src="${escapeHtml(post.image || fallbackPhoto)}" alt="${escapeHtml(post.title)}"></div>`
         : "";
       const icon = post.type === "photo" ? "camera" : "book-open";
+      const liked = post.liked ? "active" : "";
+      const likedLabel = post.liked ? "Remove from favorites" : "Add to favorites";
 
       return `
-        <article class="card ${post.type}">
+        <article class="card ${post.type}" data-post-id="${escapeHtml(post.id)}">
           ${media}
           <div class="card-body">
             <div class="meta">
@@ -275,6 +488,17 @@
             <h3>${escapeHtml(post.title)}</h3>
             <p class="excerpt">${escapeHtml(post.body)}</p>
             <div class="tags">${tags}</div>
+            <div class="card-actions">
+              <button class="icon-button ${liked}" type="button" data-action="like" aria-label="${likedLabel}" title="${likedLabel}">
+                <i data-lucide="heart" aria-hidden="true"></i>
+              </button>
+              <button class="icon-button" type="button" data-action="copy" aria-label="Copy piece" title="Copy piece">
+                <i data-lucide="copy" aria-hidden="true"></i>
+              </button>
+              <button class="icon-button danger" type="button" data-action="delete" aria-label="Delete piece" title="Delete piece">
+                <i data-lucide="trash-2" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
         </article>
       `;
@@ -297,6 +521,46 @@
       renderPosts();
     });
 
+    [titleInput, authorInput, tagsInput, bodyInput].forEach((input) => {
+      input.addEventListener("input", updatePreview);
+    });
+
+    imageInput.addEventListener("input", () => {
+      if (imageInput.value.trim()) {
+        imageUploadInput.value = "";
+        clearAttachment();
+      }
+      updatePreview();
+    });
+
+    imageUploadInput.addEventListener("change", (event) => {
+      readAttachment(event.target.files[0]);
+    });
+
+    document.querySelector("#promptButton").addEventListener("click", () => {
+      bodyInput.placeholder = prompts[Math.floor(Math.random() * prompts.length)];
+      bodyInput.focus();
+      showToast("Fresh prompt added to the text box.");
+    });
+
+    grid.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-action]");
+      if (!button) {
+        return;
+      }
+
+      const card = button.closest("[data-post-id]");
+      const id = card.dataset.postId;
+      const actions = {
+        like: toggleLike,
+        copy: copyPost,
+        delete: deletePost
+      };
+      if (actions[button.dataset.action]) {
+        actions[button.dataset.action](id);
+      }
+    });
+
     document.querySelector("#clearButton").addEventListener("click", () => {
       localStorage.removeItem(STORAGE_KEY);
       state.posts = samples;
@@ -305,7 +569,10 @@
       searchInput.value = "";
       setFilter("all");
       form.reset();
+      clearAttachment();
       setType("poem");
+      updatePreview();
+      showToast("Archive reset to the starter collection.");
     });
 
     form.addEventListener("submit", (event) => {
@@ -322,18 +589,26 @@
       };
 
       if (state.type === "photo") {
-        post.image = String(formData.get("image")).trim() || fallbackPhoto;
+        post.image = state.pendingImage || String(formData.get("image")).trim() || fallbackPhoto;
       }
 
+      const previousPosts = state.posts;
       state.posts = [post, ...state.posts];
-      savePosts();
+      if (!savePosts()) {
+        state.posts = previousPosts;
+        return;
+      }
       form.reset();
+      clearAttachment();
       setType("poem");
       setFilter("all");
+      updatePreview();
+      showToast("Published to the collection.");
     });
 
     window.addEventListener("DOMContentLoaded", () => {
       setType("poem");
+      updatePreview();
       renderPosts();
       if (window.lucide) {
         window.lucide.createIcons();

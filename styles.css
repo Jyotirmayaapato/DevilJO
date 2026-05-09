@@ -424,7 +424,7 @@ select {
 textarea {
   min-height: 116px;
   resize: vertical;
-  padding: 5px;
+  padding: 12px;
 }
 
 input:focus,
@@ -572,7 +572,7 @@ select:focus {
   margin: 0;
   color: #3a352e;
   white-space: pre-line;
-  padding: 5px;
+  padding: 12px;
 }
 
 .stats {

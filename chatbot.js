@@ -120,6 +120,14 @@ const ChatWidget = () => {
     ];
   });
 
+  // Disable scroll restoration and ensure the page starts at the top on refresh
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     sessionStorage.setItem('deviljo_chat_v2', JSON.stringify(messages));
   }, [messages]);
@@ -168,18 +176,16 @@ const ChatWidget = () => {
     <React.Fragment>
       <ChatButton isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} />
       
-      {/* Floating Chat Window */}
-      <div 
-        className={`fixed bottom-24 right-5 w-[calc(100%-40px)] sm:w-[380px] h-[600px] max-h-[80vh] bg-white rounded-[20px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] z-[9999] flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right ${
-          isOpen 
-          ? 'opacity-100 scale-100 translate-y-0' 
-          : 'opacity-0 scale-90 translate-y-10 pointer-events-none'
-        }`}
-      > 
-        <ChatHeader onClose={() => setIsOpen(false)} onReset={handleReset} />
-        <MessageList messages={messages} isTyping={isTyping} />
-        <ChatInput onSend={handleSend} isOpen={isOpen} />
-      </div>
+      {/* Floating Chat Window - Rendered ONLY when manually opened to prevent flicker */}
+      {isOpen && (
+        <div 
+          className="fixed bottom-24 right-5 w-[calc(100%-40px)] sm:w-[380px] h-[600px] max-h-[80vh] bg-white rounded-[20px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] z-[9999] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-bottom-10 duration-300 origin-bottom-right"
+        > 
+          <ChatHeader onClose={() => setIsOpen(false)} onReset={handleReset} />
+          <MessageList messages={messages} isTyping={isTyping} />
+          <ChatInput onSend={handleSend} isOpen={isOpen} />
+        </div>
+      )}
 
       {/* Backdrop for mobile */}
       {isOpen && (

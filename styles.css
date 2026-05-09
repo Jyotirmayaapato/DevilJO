@@ -505,18 +505,53 @@ select:focus {
   gap: 12px;
 }
 
-.photo-fields {
+.photo-fields,
+.poem-background-controls {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   transition: all 0.3s ease;
   padding: 10px;
+  border-radius: 8px;
   background: rgba(47, 125, 124, 0.06);
   border: 1px solid rgba(47, 125, 124, 0.16);
-  border-radius: 8px;
 }
 
-.photo-fields label {
+.file-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.file-row label {
+  flex: 1;
+}
+
+.remove-file-btn {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  margin-top: 19px;
+  color: var(--rose);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.remove-file-btn:hover {
+  background: #fdf2f2;
+  border-color: var(--rose);
+  transform: scale(1.05);
+}
+
+.remove-file-btn:active {
+  transform: scale(0.95);
+}
+
+.photo-fields label,
+.poem-background-controls label {
   min-width: 0;
 }
 
@@ -546,18 +581,6 @@ select:focus {
 .card.has-poem-background {
   background-position: center;
   background-size: cover;
-}
-
-.poem-background-controls {
-  margin-top: 12px;
-  padding: 10px;
-  background: rgba(255, 253, 248, 0.72);
-  border: 1px solid rgba(221, 213, 200, 0.86);
-  border-radius: 8px;
-}
-
-.poem-background-controls label {
-  min-width: 0;
 }
 
 .background-input-row {

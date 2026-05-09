@@ -477,6 +477,36 @@ select:focus {
   border-radius: 8px;
 }
 
+.preview.has-poem-background,
+.card.has-poem-background {
+  background-position: center;
+  background-size: cover;
+}
+
+.poem-background-controls {
+  margin-top: 12px;
+  padding: 10px;
+  background: rgba(255, 253, 248, 0.72);
+  border: 1px solid rgba(221, 213, 200, 0.86);
+  border-radius: 8px;
+}
+
+.poem-background-controls label {
+  min-width: 0;
+}
+
+.background-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.poem-background-controls .ghost-button {
+  min-height: 42px;
+  align-self: stretch;
+}
+
 .preview-top {
   display: flex;
   align-items: center;
@@ -490,6 +520,24 @@ select:focus {
 .preview-top svg {
   width: 18px;
   height: 18px;
+}
+
+.preview-toggle {
+  width: 34px;
+  min-height: 34px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--teal);
+  background: rgba(255, 253, 248, 0.82);
+  border: 1px solid rgba(47, 125, 124, 0.22);
+  border-radius: 8px;
+}
+
+.preview-toggle:hover,
+.preview-toggle:focus-visible {
+  color: #fffaf0;
+  background: var(--teal);
+  outline: none;
 }
 
 .preview-image {
@@ -590,10 +638,53 @@ select:focus {
   border-color: var(--sage);
 }
 
+.collection-views {
+  display: grid;
+  gap: 24px;
+}
+
+.collection-view {
+  min-width: 0;
+}
+
+.view-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+
+.view-heading h3 {
+  margin: 0;
+  color: var(--night);
+  font-size: 19px;
+}
+
+.view-heading span {
+  min-width: 36px;
+  min-height: 28px;
+  display: inline-grid;
+  place-items: center;
+  color: #fffaf0;
+  background: var(--teal);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
+}
+
+.poem-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+.photo-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .card {
@@ -616,6 +707,10 @@ select:focus {
   background: #e9e1d4;
 }
 
+.photo .card-media {
+  aspect-ratio: 1 / 1;
+}
+
 .card-media img {
   width: 100%;
   height: 100%;
@@ -624,6 +719,14 @@ select:focus {
 
 .card-body {
   padding: 18px;
+}
+
+.poem .card-body {
+  padding: 22px;
+}
+
+.poem.has-poem-background .card-body {
+  background: rgba(255, 253, 248, 0.2);
 }
 
 .meta {
@@ -663,6 +766,19 @@ select:focus {
 .poem h3 {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 500;
+}
+
+.poem .excerpt {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.photo .excerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .excerpt {
@@ -819,7 +935,11 @@ select:focus {
 
   .form-row,
   .photo-fields,
+  .poem-background-controls,
+  .background-input-row,
   .stats,
+  .poem-grid,
+  .photo-grid,
   .grid {
     grid-template-columns: 1fr;
   }

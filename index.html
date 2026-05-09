@@ -24,7 +24,7 @@
         <a href="#studio"><i data-lucide="pen-line" aria-hidden="true"></i><span>Studio</span></a>
         <a href="#collection"><i data-lucide="images" aria-hidden="true"></i><span>Collection</span></a>
         <a href="#collection" data-nav-filter="poem"><i data-lucide="book-open" aria-hidden="true"></i><span>Poetry</span></a>
-        <a href="#collection" data-nav-filter="photo"><i data-lucide="camera" aria-hidden="true"></i><span>Photos</span></a>
+        <a href="#collection" data-nav-filter="photo"><i data-lucide="camera" aria-hidden="true"></i><span><!-- Photo -->s</span></a>
       </nav>
       <p class="sidebar-note">"What stays after the moment leaves is the image, the line, and the nerve to share both."</p>
     </aside>
@@ -125,15 +125,27 @@
             <aside class="preview" aria-label="Live post preview">
               <div class="preview-top">
                 <span id="previewType">Poem preview</span>
-                <i data-lucide="eye" aria-hidden="true"></i>
+                <button class="preview-toggle" id="previewToggle" type="button" aria-label="Hide preview" aria-expanded="true">
+                  <i data-lucide="eye" aria-hidden="true"></i>
+                </button>
               </div>
-              <div class="preview-image" id="previewImage" hidden>
-                <img id="previewImageElement" alt="Selected photo preview">
-              </div>
-              <h3 id="previewTitle">Your title will appear here</h3>
-              <p id="previewBody">Start typing to see a live preview of your piece.</p>
-              <div class="tags" id="previewTags">
-                <span class="tag">draft</span>
+              <div class="preview-content" id="previewContent">
+                <div class="poem-background-controls" id="poemBackgroundControls">
+                  <label>
+                    Poem background template
+                    <input id="poemBackgroundInput" type="file" accept="image/*">
+                    <span class="field-help" id="poemBackgroundHelp"></span>
+                  </label>
+                  <button class="ghost-button" id="clearPoemBackgroundButton" type="button">Clear</button>
+                </div>
+                <div class="preview-image" id="previewImage" hidden>
+                  <img id="previewImageElement" alt="Selected photo preview">
+                </div>
+                <h3 id="previewTitle">Your title will appear here</h3>
+                <p id="previewBody">Start typing to see a live preview of your piece.</p>
+                <div class="tags" id="previewTags">
+                  <span class="tag">draft</span>
+                </div>
               </div>
             </aside>
           </section>
@@ -167,7 +179,23 @@
             </div>
           </div>
 
-          <div class="grid" id="postGrid"></div>
+          <div class="collection-views" id="collectionViews">
+            <section class="collection-view poem-view" data-view-type="poem" aria-labelledby="poemViewTitle">
+              <div class="view-heading">
+                <h3 id="poemViewTitle">Poems</h3>
+                <span id="visiblePoemCount">0</span>
+              </div>
+              <div class="grid poem-grid" id="poemGrid"></div>
+            </section>
+
+            <section class="collection-view photo-view" data-view-type="photo" aria-labelledby="photoViewTitle">
+              <div class="view-heading">
+                <h3 id="photoViewTitle">Photography</h3>
+                <span id="visiblePhotoCount">0</span>
+              </div>
+              <div class="grid photo-grid" id="photoGrid"></div>
+            </section>
+          </div>
           <div class="empty" id="emptyState">No pieces match this search.</div>
         </section>
       </div>
@@ -230,11 +258,15 @@
       filter: "all",
       query: "",
       pendingImage: "",
+      pendingPoemBackground: "",
+      previewVisible: true,
       posts: loadPosts()
     };
 
     const form = document.querySelector("#postForm");
-    const grid = document.querySelector("#postGrid");
+    const poemGrid = document.querySelector("#poemGrid");
+    const photoGrid = document.querySelector("#photoGrid");
+    const collectionViews = document.querySelector("#collectionViews");
     const emptyState = document.querySelector("#emptyState");
     const searchInput = document.querySelector("#searchInput");
     const imageField = document.querySelector("#imageField");
@@ -246,7 +278,14 @@
     const tagsInput = document.querySelector("#tagsInput");
     const bodyInput = document.querySelector("#bodyInput");
     const bodyCount = document.querySelector("#bodyCount");
+    const preview = document.querySelector(".preview");
+    const previewToggle = document.querySelector("#previewToggle");
+    const previewContent = document.querySelector("#previewContent");
     const previewType = document.querySelector("#previewType");
+    const poemBackgroundControls = document.querySelector("#poemBackgroundControls");
+    const poemBackgroundInput = document.querySelector("#poemBackgroundInput");
+    const poemBackgroundHelp = document.querySelector("#poemBackgroundHelp");
+    const clearPoemBackgroundButton = document.querySelector("#clearPoemBackgroundButton");
     const previewImage = document.querySelector("#previewImage");
     const previewImageElement = document.querySelector("#previewImageElement");
     const previewTitle = document.querySelector("#previewTitle");
@@ -256,6 +295,8 @@
     const totalCount = document.querySelector("#totalCount");
     const poemCount = document.querySelector("#poemCount");
     const photoCount = document.querySelector("#photoCount");
+    const visiblePoemCount = document.querySelector("#visiblePoemCount");
+    const visiblePhotoCount = document.querySelector("#visiblePhotoCount");
 
     function loadPosts() {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -326,7 +367,19 @@
 
     function renderPosts() {
       const visiblePosts = state.posts.filter(postMatches);
-      grid.innerHTML = visiblePosts.map(toCard).join("");
+      const visiblePoems = visiblePosts.filter((post) => post.type === "poem");
+      const visiblePhotos = visiblePosts.filter((post) => post.type === "photo");
+
+      poemGrid.innerHTML = visiblePoems.map(toCard).join("");
+      photoGrid.innerHTML = visiblePhotos.map(toCard).join("");
+      visiblePoemCount.textContent = visiblePoems.length;
+      visiblePhotoCount.textContent = visiblePhotos.length;
+      document.querySelectorAll("[data-view-type]").forEach((view) => {
+        const type = view.dataset.viewType;
+        const isActiveFilter = state.filter === "all" || state.filter === type;
+        const hasPosts = type === "poem" ? visiblePoems.length > 0 : visiblePhotos.length > 0;
+        view.hidden = !isActiveFilter || !hasPosts;
+      });
       emptyState.classList.toggle("visible", visiblePosts.length === 0);
       renderStats();
       if (window.lucide) {
@@ -351,13 +404,30 @@
       }, 2200);
     }
 
+    function setPreviewVisible(isVisible) {
+      state.previewVisible = isVisible;
+      previewContent.hidden = !isVisible;
+      previewToggle.setAttribute("aria-expanded", String(isVisible));
+      previewToggle.setAttribute("aria-label", isVisible ? "Hide preview" : "Show preview");
+      previewToggle.innerHTML = `<i data-lucide="${isVisible ? "eye" : "eye-off"}" aria-hidden="true"></i>`;
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
     function updatePreview() {
       const title = titleInput.value.trim() || "Your title will appear here";
       const body = bodyInput.value.trim() || "Start typing to see a live preview of your piece.";
       const tags = normalizeTags(tagsInput.value);
       const photoSource = getDraftImage();
+      const hasPoemBackground = state.type === "poem" && Boolean(state.pendingPoemBackground);
       bodyCount.textContent = bodyInput.value.length;
       previewType.textContent = state.type === "photo" ? "Photo preview" : "Poem preview";
+      poemBackgroundControls.hidden = state.type !== "poem";
+      preview.classList.toggle("has-poem-background", hasPoemBackground);
+      preview.style.backgroundImage = hasPoemBackground
+        ? `linear-gradient(rgba(255, 253, 248, 0.82), rgba(255, 253, 248, 0.9)), url("${state.pendingPoemBackground}")`
+        : "";
       previewImage.hidden = state.type !== "photo" || !photoSource;
       previewImageElement.src = photoSource || "";
       previewTitle.textContent = title;
@@ -374,6 +444,47 @@
     function clearAttachment() {
       state.pendingImage = "";
       attachmentHelp.textContent = "";
+    }
+
+    function clearPoemBackground() {
+      state.pendingPoemBackground = "";
+      poemBackgroundInput.value = "";
+      poemBackgroundHelp.textContent = "";
+      updatePreview();
+    }
+
+    function readPoemBackground(file) {
+      if (!file) {
+        clearPoemBackground();
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        poemBackgroundInput.value = "";
+        poemBackgroundHelp.textContent = "";
+        showToast("Please choose an image file.");
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        poemBackgroundInput.value = "";
+        poemBackgroundHelp.textContent = "";
+        showToast("Choose a background under 2 MB.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        state.pendingPoemBackground = String(reader.result || "");
+        poemBackgroundHelp.textContent = file.name;
+        updatePreview();
+        showToast("Poem background applied.");
+      });
+      reader.addEventListener("error", () => {
+        clearPoemBackground();
+        showToast("Could not read that background.");
+      });
+      reader.readAsDataURL(file);
     }
 
     function readAttachment(file) {
@@ -476,9 +587,13 @@
       const icon = post.type === "photo" ? "camera" : "book-open";
       const liked = post.liked ? "active" : "";
       const likedLabel = post.liked ? "Remove from favorites" : "Add to favorites";
+      const background = post.type === "poem" && post.background
+        ? ` style="background-image: linear-gradient(rgba(255, 253, 248, 0.86), rgba(255, 253, 248, 0.94)), url('${escapeHtml(post.background)}')"`
+        : "";
+      const backgroundClass = post.type === "poem" && post.background ? " has-poem-background" : "";
 
       return `
-        <article class="card ${post.type}" data-post-id="${escapeHtml(post.id)}">
+        <article class="card ${post.type}${backgroundClass}" data-post-id="${escapeHtml(post.id)}"${background}>
           ${media}
           <div class="card-body">
             <div class="meta">
@@ -537,19 +652,33 @@
       readAttachment(event.target.files[0]);
     });
 
+    previewToggle.addEventListener("click", () => {
+      setPreviewVisible(!state.previewVisible);
+    });
+
+    poemBackgroundInput.addEventListener("change", (event) => {
+      readPoemBackground(event.target.files[0]);
+    });
+
+    clearPoemBackgroundButton.addEventListener("click", clearPoemBackground);
+
     document.querySelector("#promptButton").addEventListener("click", () => {
       bodyInput.placeholder = prompts[Math.floor(Math.random() * prompts.length)];
       bodyInput.focus();
       showToast("Fresh prompt added to the text box.");
     });
 
-    grid.addEventListener("click", (event) => {
+    collectionViews.addEventListener("click", (event) => {
       const button = event.target.closest("[data-action]");
       if (!button) {
         return;
       }
 
       const card = button.closest("[data-post-id]");
+      if (!card) {
+        return;
+      }
+
       const id = card.dataset.postId;
       const actions = {
         like: toggleLike,
@@ -570,6 +699,7 @@
       setFilter("all");
       form.reset();
       clearAttachment();
+      clearPoemBackground();
       setType("poem");
       updatePreview();
       showToast("Archive reset to the starter collection.");
@@ -590,6 +720,8 @@
 
       if (state.type === "photo") {
         post.image = state.pendingImage || String(formData.get("image")).trim() || fallbackPhoto;
+      } else if (state.pendingPoemBackground) {
+        post.background = state.pendingPoemBackground;
       }
 
       const previousPosts = state.posts;
@@ -600,6 +732,7 @@
       }
       form.reset();
       clearAttachment();
+      clearPoemBackground();
       setType("poem");
       setFilter("all");
       updatePreview();
@@ -608,6 +741,7 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       setType("poem");
+      setPreviewVisible(true);
       updatePreview();
       renderPosts();
       if (window.lucide) {

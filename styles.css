@@ -22,6 +22,10 @@
   box-sizing: border-box;
 }
 
+.hidden {
+  display: none !important;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -420,7 +424,7 @@ select {
 textarea {
   min-height: 116px;
   resize: vertical;
-  padding: 10px 12px;
+  padding: 5px;
 }
 
 input:focus,
@@ -568,6 +572,7 @@ select:focus {
   margin: 0;
   color: #3a352e;
   white-space: pre-line;
+  padding: 5px;
 }
 
 .stats {
@@ -947,5 +952,11 @@ select:focus {
   .toast {
     right: 18px;
     bottom: 18px;
+  }
+
+  .chatbot-window {
+    width: calc(100% - 36px);
+    right: 18px;
+    bottom: 80px;
   }
 }

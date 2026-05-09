@@ -8,6 +8,12 @@
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="styles.css">
+  
+  <!-- React, Tailwind, and Framer Motion CDNs -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 </head>
 <body>
@@ -24,7 +30,7 @@
         <a href="#studio"><i data-lucide="pen-line" aria-hidden="true"></i><span>Studio</span></a>
         <a href="#collection"><i data-lucide="images" aria-hidden="true"></i><span>Collection</span></a>
         <a href="#collection" data-nav-filter="poem"><i data-lucide="book-open" aria-hidden="true"></i><span>Poetry</span></a>
-        <a href="#collection" data-nav-filter="photo"><i data-lucide="camera" aria-hidden="true"></i><span><!-- Photo -->s</span></a>
+        <a href="#collection" data-nav-filter="photo"><i data-lucide="camera" aria-hidden="true"></i><span>Photo Content</span></a>
       </nav>
       <p class="sidebar-note">"What stays after the moment leaves is the image, the line, and the nerve to share both."</p>
     </aside>
@@ -749,5 +755,9 @@
       }
     });
   </script>
+
+  <!-- Chatbot React Widget -->
+  <div id="chatbot-root"></div>
+  <script type="text/babel" src="chatbot.js"></script>
 </body>
 </html>

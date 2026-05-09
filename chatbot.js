@@ -5,7 +5,7 @@ const { useState, useEffect, useRef } = React;
 const ChatButton = ({ isOpen, toggle }) => (
   <button
     onClick={toggle}
-    className="fixed bottom-5 right-5 w-14 h-14 rounded-full bg-gradient-to-tr from-[#2f7d7c] to-[#24303a] text-white shadow-lg z-[9999] flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
+    className={`fixed bottom-5 right-5 w-14 h-14 rounded-full bg-gradient-to-tr from-[#2f7d7c] to-[#24303a] text-white shadow-lg z-[9999] flex items-center justify-center transition-all hover:scale-110 active:scale-90 ${!isOpen ? 'animate-bounce [animation-iteration-count:3] [animation-delay:2s]' : ''}`}
     aria-label="Toggle Chat"
   >
     {isOpen ? (

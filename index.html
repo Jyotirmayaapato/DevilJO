@@ -54,23 +54,73 @@
       </header>
 
       <div class="content">
-        <section class="intro" aria-label="Creative studio">
-          <article class="feature">
-            <img src="https://images.unsplash.com/photo-1496449903678-68ddcb189a24?auto=format&fit=crop&w=1400&q=80" alt="Notebook with handwritten poetry beside a camera">
-            <div class="feature-copy">
-              <h1>DevilJO</h1>
-              <p>A quiet digital studio for original poems, photo essays, field notes, and the small beautiful evidence of being alive.</p>
-              <div class="hero-actions">
-                <a class="primary-button" href="#studio">
-                  <i data-lucide="pen-line" aria-hidden="true"></i>
-                  Start writing
-                </a>
-                <a class="ghost-button light" href="#collection">
-                  <i data-lucide="images" aria-hidden="true"></i>
-                  Browse archive
-                </a>
+        <section class="intro animate-entry" aria-label="Creative studio" style="animation-delay: 0.1s;">
+          <article class="feature" id="heroSlider">
+            <!-- Slide 1: Poems -->
+            <div class="slide active">
+              <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=80" alt="Old paper and ink pen">
+              <div class="slide-overlay"></div>
+              <div class="feature-copy">
+                <h1>DevilJO</h1>
+                <p>A digital home for original poems. The quiet rhythm of the heart, captured in lines and verses.</p>
+                <div class="hero-actions">
+                  <a class="primary-button" href="#studio">
+                    <i data-lucide="pen-line" aria-hidden="true"></i>
+                    Start writing
+                  </a>
+                  <a class="ghost-button light" href="#collection">
+                    <i data-lucide="images" aria-hidden="true"></i>
+                    Browse archive
+                  </a>
+                </div>
               </div>
             </div>
+            <!-- Slide 2: Photo Essays -->
+            <div class="slide">
+              <img src="https://images.unsplash.com/photo-1452784444945-3f422708fe5e?auto=format&fit=crop&w=1400&q=80" alt="Vintage camera lens">
+              <div class="slide-overlay"></div>
+              <div class="feature-copy">
+                <h1>DevilJO</h1>
+                <p>Visual stories told in frames. Capturing the narrative hidden in photo essays and light.</p>
+                <div class="hero-actions">
+                  <a class="primary-button" href="#studio">
+                    <i data-lucide="camera" aria-hidden="true"></i>
+                    Post photo
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 3: Field Notes -->
+            <div class="slide">
+              <img src="https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=1400&q=80" alt="Notebook on a wooden table">
+              <div class="slide-overlay"></div>
+              <div class="feature-copy">
+                <h1>DevilJO</h1>
+                <p>Raw fragments of reality. Preserving the unfiltered essence of field notes and observations.</p>
+                <div class="hero-actions">
+                  <a class="primary-button" href="#studio">
+                    <i data-lucide="book-open" aria-hidden="true"></i>
+                    Record note
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 4: Evidence of life -->
+            <div class="slide">
+              <img src="https://images.unsplash.com/photo-1499209974431-9dac3adaf477?auto=format&fit=crop&w=1400&q=80" alt="Soft light hitting a wall">
+              <div class="slide-overlay"></div>
+              <div class="feature-copy">
+                <h1>DevilJO</h1>
+                <p>The art of noticing quiet moments. Finding the small beautiful evidence of being alive.</p>
+                <div class="hero-actions">
+                  <a class="primary-button" href="#studio">
+                    <i data-lucide="sparkles" aria-hidden="true"></i>
+                    Notice life
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="slider-dots" id="sliderDots"></div>
           </article>
 
           <section class="composer" id="studio" aria-labelledby="composerTitle">
@@ -157,7 +207,7 @@
           </section>
         </section>
 
-        <section id="collection" aria-labelledby="collectionTitle">
+        <section id="collection" class="animate-entry" aria-labelledby="collectionTitle" style="animation-delay: 0.3s;">
           <div class="stats" aria-label="Archive summary">
             <div>
               <span id="totalCount">0</span>
@@ -337,7 +387,7 @@
 
     function setType(type) {
       state.type = type;
-      imageField.classList.toggle("is-muted", type !== "photo");
+      imageField.hidden = type !== "photo";
       document.querySelectorAll("[data-type]").forEach((button) => {
         button.classList.toggle("active", button.dataset.type === type);
       });
@@ -745,11 +795,48 @@
       showToast("Published to the collection.");
     });
 
+    function initHeroSlider() {
+      const feature = document.querySelector('#heroSlider');
+      if (!feature) return;
+      const slides = feature.querySelectorAll('.slide');
+      const dotsContainer = feature.querySelector('#sliderDots');
+      if (slides.length <= 1) return;
+
+      let current = 0;
+      const dots = [];
+
+      // Create dots dynamically
+      slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = `dot ${i === 0 ? 'active' : ''}`;
+        dot.onclick = () => goTo(i);
+        dotsContainer.appendChild(dot);
+        dots.push(dot);
+      });
+
+      function goTo(index) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = index;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+        resetTimer();
+      }
+
+      let timer = setInterval(() => goTo((current + 1) % slides.length), 6000);
+      function resetTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => goTo((current + 1) % slides.length), 6000);
+      }
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       setType("poem");
       setPreviewVisible(true);
       updatePreview();
       renderPosts();
+      initHeroSlider();
+
       if (window.lucide) {
         window.lucide.createIcons();
       }

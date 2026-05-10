@@ -21,17 +21,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="App">
-      {/* This component can be used to wrap the flyer/studio logic in React later */}
-      <div style={{ padding: '20px', textAlign: 'center', borderBottom: '1px solid #222' }}>
-        <p className="kicker">Live Studio Mode</p>
-        <img 
-          src="https://images.unsplash.com/photo-1512446816042-444d641267d4?auto=format&fit=crop&w=1800&q=80" 
-          alt="DevilJO — Metal Type" 
-          style={{ maxWidth: '200px', margin: '20px auto', filter: 'grayscale(1)' }}
-        />
-      </div>
-    </div>
+    <div className="App"></div>
   );
 };
 

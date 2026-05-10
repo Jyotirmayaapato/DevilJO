@@ -101,3 +101,29 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+## user_problem_statement: Remove backend and transition to a standalone local frontend application.
+## backend:
+##   - task: "FastAPI Server"
+##     implemented: false
+##     working: "NA"
+##     comment: "Backend removed per user request. Application now runs client-side only."
+## frontend:
+##   - task: "Local Persistence"
+##     implemented: true
+##     working: true
+##     file: "frontend/public/index.html"
+##     status_history:
+##         -working: true
+##         -agent: "main"
+##         -comment: "Confirmed index.html uses localStorage for posts and samples. No local API dependencies found."
+##         -working: false
+##         -agent: "user"
+##         -comment: "User reported 'MODULE_NOT_FOUND' error for ajv/dist/compile/codegen on startup."
+## metadata:
+##   version: "1.1"
+##   run_ui: true
+##
+## agent_communication:
+##     -agent: "main"
+##     -message: "Guiding user through a clean install on Windows to resolve AJV version mismatch in node_modules."

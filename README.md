@@ -2,7 +2,7 @@
 
 **DevilJO** is a brutalist digital anthology designed for publishing poetry and photography. It combines a high-contrast editorial frontend with a robust FastAPI backend and integrated AI assistance.
 
-## 🖋️ Project Overview
+## 🖋️ Project Overview (Local Edition)
 
 The platform serves as a "living archive" where users can compose and view two primary types of creative content:
 - **Verse:** Poetry with support for custom background templates and live previews.
@@ -17,24 +17,16 @@ The platform serves as a "living archive" where users can compose and view two p
 
 ## 🛠️ Tech Stack
 
-### Backend
-- **Framework:** FastAPI
-- **Database:** MongoDB (via Motor async driver)
-- **Schema:** Pydantic v2
-- **Infrastructure:** CORS Middleware and automated environment loading.
-
 ### Frontend
 - **Library:** React 18
 - **Styling:** Custom Brutalist CSS & Tailwind Utility classes.
 - **AI Integration:** Lyzr Inference API.
-- **State Management:** React Hooks with SessionStorage persistence for chat history.
+- **State Management:** React Hooks with LocalStorage for content and SessionStorage for chat.
 
 ## 📂 Project Structure
 
 ```text
 DevilJO/
-├── backend/                # FastAPI Application
-│   └── server.py           # API routes, MongoDB connection, and Pydantic models
 ├── frontend/
 │   ├── public/             # Static assets
 │   │   ├── chatbot.js      # Lyzr AI Chatbot implementation
@@ -47,18 +39,7 @@ DevilJO/
 
 ## ⚙️ Getting Started
 
-### Backend Setup
-1. Navigate to the `backend/` directory.
-2. Create a `.env` file:
-   ```env
-   MONGO_URL=mongodb://localhost:27017
-   DB_NAME=deviljo
-   CORS_ORIGINS=http://localhost:3000
-   ```
-3. Install dependencies: `pip install fastapi uvicorn motor pydantic python-dotenv`
-4. Run: `uvicorn server:app --reload`
-
-### Frontend Setup
+### Setup & Execution
 1. Navigate to the `frontend/` directory.
 2. Install dependencies: `npm install`
 3. Start development: `npm start`

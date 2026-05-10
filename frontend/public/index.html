@@ -1,158 +1,861 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta name="description" content="A product of emergent.sh" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet" />
-        <!--
-        manifest.json provides metadata used when your web app is installed on a
-        user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-        -->
-        <!--
-        Notice the use of %PUBLIC_URL% in the tags above.
-        It will be replaced with the URL of the `public` folder during the build.
-        Only files inside the `public` folder can be referenced from the HTML.
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DevilJO is a static poetry and photography website for publishing creative writing, photo posts, and visual notes.">
+  <title>DevilJO | Poetry & Photography</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@300;400;500&family=Work+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- React, Tailwind, and Framer Motion CDNs -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Site navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">D</div>
+        <div>
+          <p class="brand-title">DevilJO</p>
+          <p class="brand-kicker">Poetry / Photography</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#studio" data-testid="nav-link-studio"><i data-lucide="pen-line" aria-hidden="true"></i><span>Studio</span></a>
+        <a href="#collection" data-testid="nav-link-collection"><i data-lucide="layout-grid" aria-hidden="true"></i><span>Archive</span></a>
+        <a href="#collection" data-nav-filter="poem" data-testid="nav-link-poetry"><i data-lucide="feather" aria-hidden="true"></i><span>Verse</span></a>
+        <a href="#collection" data-nav-filter="photo" data-testid="nav-link-photo"><i data-lucide="aperture" aria-hidden="true"></i><span>Frames</span></a>
+      </nav>
+      <p class="sidebar-note">"What stays after the moment leaves is the image, the line, and the nerve to share both."</p>
+    </aside>
 
-        Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-        work correctly both with client-side routing and a non-root public URL.
-        Learn how to configure a non-root public URL by running `npm run build`.
-        -->
-        <title>Emergent | Fullstack App</title>
-        <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
-        <script src="https://assets.emergent.sh/scripts/emergent-main.js"></script>
-    </head>
-    <body>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id="root"></div>
-        <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <main>
+      <header class="topbar">
+        <div class="search">
+          <i data-lucide="search" aria-hidden="true"></i>
+          <input id="searchInput" type="search" placeholder="Search titles, lines, locations, tags" aria-label="Search content" data-testid="search-input">
+        </div>
+        <div class="actions">
+          <button class="ghost-button" id="clearButton" type="button" data-testid="reset-archive-button">
+            <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+            Reset
+          </button>
+          <a class="primary-button" href="#studio" data-testid="topbar-create-button">
+            <i data-lucide="plus" aria-hidden="true"></i>
+            New Piece
+          </a>
+        </div>
+      </header>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+      <div class="content">
+        <section class="intro animate-entry" aria-label="Creative studio" style="animation-delay: 0.1s;">
+          <article class="feature" id="heroSlider" data-testid="hero-slider">
+            <!-- Slide 1: Poems -->
+            <div class="slide active">
+              <img src="https://images.unsplash.com/photo-1499209974431-9dac3adaf477?auto=format&fit=crop&w=1800&q=80" alt="Soft light across a wall">
+              <div class="slide-overlay"></div>
+              <div class="feature-copy">
+                <h1>Devil<span class="accent">/</span>JO</h1>
+                <p>An anthology of original verse. The quiet rhythm of the heart, set in metal type and digital ink.</p>
+                <div class="hero-actions">
+                  <a class="primary-button" href="#studio" data-testid="hero-cta-write">
+                    <i data-lucide="pen-line" aria-hidden="true"></i>
+                    Begin a piece
+                  </a>
+                  <a class="ghost-button light" href="#collection" data-testid="hero-cta-browse">
+                    <i data-lucide="images" aria-hidden="true"></i>
+                    Open archive
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 2: Photo Essays -->
+            <div class="slide">
+              <img src="https://images.unsplash.com/photo-1452784444945-3f422708fe5e?auto=format&fit=crop&w=1800&q=80" alt="Vintage camera lens">
+              <div class="slide-overlay"></div>
+              <div class="feature-copy">
+                <h1>Frame<span class="accent">.</span></h1>
+                <p>Visual essays told in single exposures. The narrative hidden in shadow, grain, and the negative space between subjects.</p>
+                <div class="hero-actions">
+                  <a class="primary-button" href="#studio" data-testid="hero-cta-photo">
+                    <i data-lucide="camera" aria-hidden="true"></i>
+                    Post a photograph
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 3: Field Notes -->
+            <div class="slide">
+              <img src="https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?auto=format&fit=crop&w=1800&q=80" alt="Notebook on a wooden table">
+              <div class="slide-overlay"></div>
+              <div class="feature-copy">
+                <h1>Field<span class="accent">,</span> notes</h1>
+                <p>Raw fragments of the world as it passed through. Unfiltered, undated, sometimes unfinished — always honest.</p>
+                <div class="hero-actions">
+                  <a class="primary-button" href="#studio" data-testid="hero-cta-note">
+                    <i data-lucide="book-open" aria-hidden="true"></i>
+                    Record a note
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- Slide 4: Evidence of life -->
+            <div class="slide">
+              <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1800&q=80" alt="Old paper and ink pen">
+              <div class="slide-overlay"></div>
+              <div class="feature-copy">
+                <h1>Evidence<span class="accent">.</span></h1>
+                <p>The art of noticing — of catching the small beautiful proof that we were here, briefly and on purpose.</p>
+                <div class="hero-actions">
+                  <a class="primary-button" href="#studio" data-testid="hero-cta-notice">
+                    <i data-lucide="sparkles" aria-hidden="true"></i>
+                    Notice something
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="slider-dots" id="sliderDots"></div>
+          </article>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-        <a
-            id="emergent-badge"
-            target="_blank"
-            href="https://app.emergent.sh/?utm_source=emergent-badge"
-            style="
-                display: inline-flex !important;
-                box-sizing: border-box;
-                width: 178px;
-                height: 40px;
-                padding: 8px 12px 8px 12px;
-                align-items: center !important;
-                gap: 8px;
-                border-radius: 50px !important;
-                background: #000 !important;
-                position: fixed !important;
-                bottom: 16px;
-                right: 16px;
-                text-decoration: none;
-                font-family: -apple-system, BlinkMacSystemFont,
-                    &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell,
-                    &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;,
-                    sans-serif !important;
-                font-size: 12px !important;
-                z-index: 9999 !important;
-            "
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M15.5702 8.13142C15.7729 8.0412 16.0007 8.18878 15.9892 8.4103C15.8374 11.3192 14.0965 14.0405 11.2531 15.3065C8.40964 16.5725 5.2224 16.0453 2.95912 14.2117C2.78676 14.072 2.82955 13.804 3.03219 13.7137L4.95677 12.8568C5.04866 12.8159 5.15446 12.823 5.24204 12.8725C6.73377 13.7153 8.59176 13.8649 10.2772 13.1145C11.9626 12.3641 13.0947 10.8833 13.4665 9.21075C13.4883 9.11256 13.5539 9.02918 13.6457 8.98827L15.5702 8.13142Z" fill="white"/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.3066 4.74698L15.5067 5.19653C15.5759 5.35178 15.5061 5.53366 15.3508 5.60278L1.29992 11.8586C1.14467 11.9278 0.962794 11.8579 0.893675 11.7027L0.701732 11.2716L0.693457 11.2531C-1.10317 7.21778 0.711626 2.49007 4.74692 0.693443C8.78221 -1.10318 13.51 0.711693 15.3066 4.74698ZM2.82356 8.55367C2.63552 8.63739 2.41991 8.51617 2.40853 8.31065C2.28373 6.05724 3.53858 3.85787 5.72286 2.88536C7.90715 1.91286 10.3813 2.45199 11.9724 4.05256C12.1175 4.19854 12.0633 4.43988 11.8753 4.5236L2.82356 8.55367Z" fill="white"/>
-            </svg>
-            <p
-                style="
-                    color: #FFF !important;
-                    font-family: 'Inter', sans-serif !important;
-                    font-size: 13px !important;
-                    font-style: normal !important;
-                    font-weight: 600 !important;
-                    line-height: 20px !important;
-                    margin: 0 !important;
-                    white-space: nowrap !important;
-                "
-            >
-                Made with Emergent
-            </p>
-        </a>
-        <script>
-            !(function (t, e) {
-                var o, n, p, r;
-                e.__SV ||
-                    ((window.posthog = e),
-                    (e._i = []),
-                    (e.init = function (i, s, a) {
-                        function g(t, e) {
-                            var o = e.split(".");
-                            2 == o.length && ((t = t[o[0]]), (e = o[1])),
-                                (t[e] = function () {
-                                    t.push(
-                                        [e].concat(
-                                            Array.prototype.slice.call(
-                                                arguments,
-                                                0,
-                                            ),
-                                        ),
-                                    );
-                                });
-                        }
-                        ((p = t.createElement("script")).type =
-                            "text/javascript"),
-                            (p.crossOrigin = "anonymous"),
-                            (p.async = !0),
-                            (p.src =
-                                s.api_host.replace(
-                                    ".i.posthog.com",
-                                    "-assets.i.posthog.com",
-                                ) + "/static/array.js"),
-                            (r =
-                                t.getElementsByTagName(
-                                    "script",
-                                )[0]).parentNode.insertBefore(p, r);
-                        var u = e;
-                        for (
-                            void 0 !== a ? (u = e[a] = []) : (a = "posthog"),
-                                u.people = u.people || [],
-                                u.toString = function (t) {
-                                    var e = "posthog";
-                                    return (
-                                        "posthog" !== a && (e += "." + a),
-                                        t || (e += " (stub)"),
-                                        e
-                                    );
-                                },
-                                u.people.toString = function () {
-                                    return u.toString(1) + ".people (stub)";
-                                },
-                                o =
-                                    "init me ws ys ps bs capture je Di ks register register_once register_for_session unregister unregister_for_session Ps getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty Es $s createPersonProfile Is opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Ss debug xs getPageViewId captureTraceFeedback captureTraceMetric".split(
-                                        " ",
-                                    ),
-                                n = 0;
-                            n < o.length;
-                            n++
-                        )
-                            g(u, o[n]);
-                        e._i.push([i, s, a]);
-                    }),
-                    (e.__SV = 1));
-            })(document, window.posthog || []);
-            posthog.init("phc_xAvL2Iq4tFmANRE7kzbKwaSqp1HJjN7x48s3vr0CMjs", {
-                api_host: "https://us.i.posthog.com",
-                person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well,
-                session_recording: {
-                    recordCrossOriginIframes: true,
-                    capturePerformance: false,
-                },
-            });
-        </script>
-    </body>
+          <section class="composer" id="studio" aria-labelledby="composerTitle">
+            <div class="section-title">
+              <div>
+                <p class="eyebrow">— The Studio</p>
+                <h2 id="composerTitle">Compose a piece</h2>
+              </div>
+              <div class="segmented" aria-label="Post type">
+                <button class="active" type="button" data-type="poem" data-testid="composer-type-poem">Poem</button>
+                <button type="button" data-type="photo" data-testid="composer-type-photo">Photo</button>
+              </div>
+            </div>
+
+            <form class="form-grid" id="postForm">
+              <label>
+                Title
+                <input id="titleInput" name="title" required maxlength="80" placeholder="Monsoon at the window">
+              </label>
+              <div class="form-row">
+                <label>
+                  Author
+                  <input id="authorInput" name="author" maxlength="40" placeholder="DevilJO">
+                </label>
+                <label>
+                  Tags
+                  <input id="tagsInput" name="tags" maxlength="80" placeholder="rain, memory, street">
+                </label>
+              </div>
+              <div class="photo-fields" id="imageField">
+                <label>
+                  Photo URL
+                  <input id="imageInput" name="image" type="url" placeholder="https://images.unsplash.com/...">
+                </label>
+                <label>
+                  Local attachment
+                  <input id="imageUploadInput" name="imageUpload" type="file" accept="image/*">
+                  <span class="field-help" id="attachmentHelp"></span>
+                </label>
+              </div>
+              <label>
+                Text
+                <textarea id="bodyInput" name="body" required maxlength="700" placeholder="Write the poem, caption, or field note."></textarea>
+                <span class="field-help"><span id="bodyCount">0</span>/700 characters</span>
+              </label>
+              <div class="form-actions">
+                <button class="ghost-button" id="promptButton" type="button">
+                  <i data-lucide="wand-sparkles" aria-hidden="true"></i>
+                  Prompt
+                </button>
+                <button class="primary-button" type="submit">
+                  <i data-lucide="send" aria-hidden="true"></i>
+                  Publish
+                </button>
+              </div>
+            </form>
+
+            <aside class="preview" aria-label="Live post preview">
+              <div class="preview-top">
+                <span id="previewType">Poem preview</span>
+                <button class="preview-toggle" id="previewToggle" type="button" aria-label="Hide preview" aria-expanded="true">
+                  <i data-lucide="eye" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="preview-content" id="previewContent">
+                <div class="poem-background-controls" id="poemBackgroundControls">
+                  <label>
+                    Poem background template
+                    <input id="poemBackgroundInput" type="file" accept="image/*">
+                    <span class="field-help" id="poemBackgroundHelp"></span>
+                  </label>
+                  <button class="ghost-button" id="clearPoemBackgroundButton" type="button">Clear</button>
+                </div>
+                <div class="preview-image" id="previewImage" hidden>
+                  <img id="previewImageElement" alt="Selected photo preview">
+                </div>
+                <h3 id="previewTitle">Your title will appear here</h3>
+                <p id="previewBody">Start typing to see a live preview of your piece.</p>
+                <div class="tags" id="previewTags">
+                  <span class="tag">draft</span>
+                </div>
+              </div>
+            </aside>
+          </section>
+        </section>
+
+        <section id="collection" class="section-shell animate-entry" aria-labelledby="collectionTitle" style="animation-delay: 0.3s;">
+          <div class="stats" aria-label="Archive summary">
+            <div>
+              <p>Total pieces</p>
+              <span id="totalCount">0</span>
+            </div>
+            <div>
+              <p>Verse</p>
+              <span id="poemCount">0</span>
+            </div>
+            <div>
+              <p>Frames</p>
+              <span id="photoCount">0</span>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <div>
+              <h2 id="collectionTitle" class="collection-heading">The Archive</h2>
+              <p class="collection-subtitle">— Verse, frames, and fragments / one living anthology</p>
+            </div>
+            <div class="filters" aria-label="Content filters">
+              <button class="filter active" type="button" data-filter="all" data-testid="filter-all">All</button>
+              <button class="filter" type="button" data-filter="poem" id="poetry" data-testid="filter-poem">Verse</button>
+              <button class="filter" type="button" data-filter="photo" id="photos" data-testid="filter-photo">Frames</button>
+            </div>
+          </div>
+
+          <div class="collection-views" id="collectionViews">
+            <section class="collection-view poem-view" data-view-type="poem" aria-labelledby="poemViewTitle">
+              <div class="view-heading">
+                <h3 id="poemViewTitle">Verse</h3>
+                <span id="visiblePoemCount">0</span>
+              </div>
+              <div class="grid poem-grid" id="poemGrid"></div>
+            </section>
+
+            <section class="collection-view photo-view" data-view-type="photo" aria-labelledby="photoViewTitle">
+              <div class="view-heading">
+                <h3 id="photoViewTitle">Frames</h3>
+                <span id="visiblePhotoCount">0</span>
+              </div>
+              <div class="grid photo-grid" id="photoGrid"></div>
+            </section>
+          </div>
+          <div class="empty" id="emptyState">— No pieces match this search —</div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "deviljo-posts";
+    const fallbackPhoto = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
+    const prompts = [
+      "Write about a place that changed after rain.",
+      "Describe a shadow that felt like a memory.",
+      "Capture the first sound you noticed this morning.",
+      "Write a caption for light falling across an ordinary object."
+    ];
+    const samples = [
+      {
+        id: "sample-1",
+        type: "poem",
+        title: "After the Rain",
+        author: "DevilJO",
+        body: "The road keeps every cloud\nin broken silver pieces.\nI walk home slower,\nletting the city remember me.",
+        tags: ["rain", "city", "memory"],
+        createdAt: "2026-05-04"
+      },
+      {
+        id: "sample-2",
+        type: "photo",
+        title: "Window Light",
+        author: "DevilJO",
+        body: "Late afternoon folding itself over a desk, a notebook, and the patience of an unfinished line.",
+        tags: ["light", "desk", "quiet"],
+        image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
+        createdAt: "2026-05-04"
+      },
+      {
+        id: "sample-3",
+        type: "photo",
+        title: "Blue Hour Street",
+        author: "DevilJO",
+        body: "A frame for the exact second the city stops pretending it is only concrete.",
+        tags: ["street", "blue hour", "travel"],
+        image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80",
+        createdAt: "2026-05-04"
+      },
+      {
+        id: "sample-4",
+        type: "poem",
+        title: "Small Fire",
+        author: "DevilJO",
+        body: "Do not ask the candle\nwhy it leans toward the dark.\nEven a little flame\nknows where it is needed.",
+        tags: ["hope", "night", "voice"],
+        createdAt: "2026-05-04"
+      }
+    ];
+
+    const state = {
+      type: "poem",
+      filter: "all",
+      query: "",
+      pendingImage: "",
+      pendingPoemBackground: "",
+      previewVisible: true,
+      posts: loadPosts()
+    };
+
+    const form = document.querySelector("#postForm");
+    const poemGrid = document.querySelector("#poemGrid");
+    const photoGrid = document.querySelector("#photoGrid");
+    const collectionViews = document.querySelector("#collectionViews");
+    const emptyState = document.querySelector("#emptyState");
+    const searchInput = document.querySelector("#searchInput");
+    const imageField = document.querySelector("#imageField");
+    const imageInput = document.querySelector("#imageInput");
+    const imageUploadInput = document.querySelector("#imageUploadInput");
+    const attachmentHelp = document.querySelector("#attachmentHelp");
+    const titleInput = document.querySelector("#titleInput");
+    const authorInput = document.querySelector("#authorInput");
+    const tagsInput = document.querySelector("#tagsInput");
+    const bodyInput = document.querySelector("#bodyInput");
+    const bodyCount = document.querySelector("#bodyCount");
+    const preview = document.querySelector(".preview");
+    const previewToggle = document.querySelector("#previewToggle");
+    const previewContent = document.querySelector("#previewContent");
+    const previewType = document.querySelector("#previewType");
+    const poemBackgroundControls = document.querySelector("#poemBackgroundControls");
+    const poemBackgroundInput = document.querySelector("#poemBackgroundInput");
+    const poemBackgroundHelp = document.querySelector("#poemBackgroundHelp");
+    const clearPoemBackgroundButton = document.querySelector("#clearPoemBackgroundButton");
+    const previewImage = document.querySelector("#previewImage");
+    const previewImageElement = document.querySelector("#previewImageElement");
+    const previewTitle = document.querySelector("#previewTitle");
+    const previewBody = document.querySelector("#previewBody");
+    const previewTags = document.querySelector("#previewTags");
+    const toast = document.querySelector("#toast");
+    const totalCount = document.querySelector("#totalCount");
+    const poemCount = document.querySelector("#poemCount");
+    const photoCount = document.querySelector("#photoCount");
+    const visiblePoemCount = document.querySelector("#visiblePoemCount");
+    const visiblePhotoCount = document.querySelector("#visiblePhotoCount");
+
+    function loadPosts() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        return samples;
+      }
+
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return samples;
+      }
+    }
+
+    function createId() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return window.crypto.randomUUID();
+      }
+
+      return `post-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function savePosts() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.posts));
+        return true;
+      } catch {
+        showToast("Browser storage is full. Try a smaller attachment.");
+        return false;
+      }
+    }
+
+    function setType(type) {
+      state.type = type;
+      imageField.hidden = type !== "photo";
+      document.querySelectorAll("[data-type]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.type === type);
+      });
+      updatePreview();
+    }
+
+    function setFilter(filter) {
+      state.filter = filter;
+      document.querySelectorAll("[data-filter]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.filter === filter);
+      });
+      renderPosts();
+    }
+
+    function normalizeTags(value) {
+      return value
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+        .slice(0, 5);
+    }
+
+    function postMatches(post) {
+      const filterMatch = state.filter === "all" || post.type === state.filter;
+      const haystack = [
+        post.title,
+        post.author,
+        post.body,
+        ...(post.tags || [])
+      ].join(" ").toLowerCase();
+      return filterMatch && haystack.includes(state.query.toLowerCase());
+    }
+
+    function renderPosts() {
+      const visiblePosts = state.posts.filter(postMatches);
+      const visiblePoems = visiblePosts.filter((post) => post.type === "poem");
+      const visiblePhotos = visiblePosts.filter((post) => post.type === "photo");
+
+      poemGrid.innerHTML = visiblePoems.map(toCard).join("");
+      photoGrid.innerHTML = visiblePhotos.map(toCard).join("");
+      visiblePoemCount.textContent = visiblePoems.length;
+      visiblePhotoCount.textContent = visiblePhotos.length;
+      document.querySelectorAll("[data-view-type]").forEach((view) => {
+        const type = view.dataset.viewType;
+        const isActiveFilter = state.filter === "all" || state.filter === type;
+        const hasPosts = type === "poem" ? visiblePoems.length > 0 : visiblePhotos.length > 0;
+        view.hidden = !isActiveFilter || !hasPosts;
+      });
+      emptyState.classList.toggle("visible", visiblePosts.length === 0);
+      renderStats();
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function renderStats() {
+      const poems = state.posts.filter((post) => post.type === "poem").length;
+      const photos = state.posts.filter((post) => post.type === "photo").length;
+      totalCount.textContent = state.posts.length;
+      poemCount.textContent = poems;
+      photoCount.textContent = photos;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("visible");
+      window.clearTimeout(showToast.timeout);
+      showToast.timeout = window.setTimeout(() => {
+        toast.classList.remove("visible");
+      }, 2200);
+    }
+
+    function setPreviewVisible(isVisible) {
+      state.previewVisible = isVisible;
+      previewContent.hidden = !isVisible;
+      previewToggle.setAttribute("aria-expanded", String(isVisible));
+      previewToggle.setAttribute("aria-label", isVisible ? "Hide preview" : "Show preview");
+      previewToggle.innerHTML = `<i data-lucide="${isVisible ? "eye" : "eye-off"}" aria-hidden="true"></i>`;
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function updatePreview() {
+      const title = titleInput.value.trim() || "Your title will appear here";
+      const body = bodyInput.value.trim() || "Start typing to see a live preview of your piece.";
+      const tags = normalizeTags(tagsInput.value);
+      const photoSource = getDraftImage();
+      const hasPoemBackground = state.type === "poem" && Boolean(state.pendingPoemBackground);
+      bodyCount.textContent = bodyInput.value.length;
+      previewType.textContent = state.type === "photo" ? "Photo preview" : "Poem preview";
+      poemBackgroundControls.hidden = state.type !== "poem";
+      preview.classList.toggle("has-poem-background", hasPoemBackground);
+      preview.style.backgroundImage = hasPoemBackground
+        ? `linear-gradient(rgba(255, 253, 248, 0.82), rgba(255, 253, 248, 0.9)), url("${state.pendingPoemBackground}")`
+        : "";
+      previewImage.hidden = state.type !== "photo" || !photoSource;
+      previewImageElement.src = photoSource || "";
+      previewTitle.textContent = title;
+      previewBody.textContent = body;
+      previewTags.innerHTML = (tags.length ? tags : ["draft"])
+        .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
+        .join("");
+    }
+
+    function getDraftImage() {
+      return state.pendingImage || imageInput.value.trim();
+    }
+
+    function clearAttachment() {
+      state.pendingImage = "";
+      attachmentHelp.textContent = "";
+    }
+
+    function clearPoemBackground() {
+      state.pendingPoemBackground = "";
+      poemBackgroundInput.value = "";
+      poemBackgroundHelp.textContent = "";
+      updatePreview();
+    }
+
+    function readPoemBackground(file) {
+      if (!file) {
+        clearPoemBackground();
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        poemBackgroundInput.value = "";
+        poemBackgroundHelp.textContent = "";
+        showToast("Please choose an image file.");
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        poemBackgroundInput.value = "";
+        poemBackgroundHelp.textContent = "";
+        showToast("Choose a background under 2 MB.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        state.pendingPoemBackground = String(reader.result || "");
+        poemBackgroundHelp.textContent = file.name;
+        updatePreview();
+        showToast("Poem background applied.");
+      });
+      reader.addEventListener("error", () => {
+        clearPoemBackground();
+        showToast("Could not read that background.");
+      });
+      reader.readAsDataURL(file);
+    }
+
+    function readAttachment(file) {
+      if (!file) {
+        clearAttachment();
+        updatePreview();
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        imageUploadInput.value = "";
+        clearAttachment();
+        updatePreview();
+        showToast("Please choose an image file.");
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        imageUploadInput.value = "";
+        clearAttachment();
+        updatePreview();
+        showToast("Choose an image under 2 MB for browser storage.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        imageInput.value = "";
+        state.pendingImage = String(reader.result || "");
+        attachmentHelp.textContent = file.name;
+        updatePreview();
+        showToast("Local photo attached.");
+      });
+      reader.addEventListener("error", () => {
+        clearAttachment();
+        updatePreview();
+        showToast("Could not read that image.");
+      });
+      reader.readAsDataURL(file);
+    }
+
+    function findPost(id) {
+      return state.posts.find((post) => post.id === id);
+    }
+
+    function deletePost(id) {
+      const post = findPost(id);
+      if (!post || !window.confirm(`Delete "${post.title}" from the archive?`)) {
+        return;
+      }
+
+      state.posts = state.posts.filter((item) => item.id !== id);
+      savePosts();
+      renderPosts();
+      showToast("Piece deleted.");
+    }
+
+    function toggleLike(id) {
+      state.posts = state.posts.map((post) => (
+        post.id === id ? { ...post, liked: !post.liked } : post
+      ));
+      savePosts();
+      renderPosts();
+    }
+
+    function copyPost(id) {
+      const post = findPost(id);
+      if (!post) {
+        return;
+      }
+
+      const text = `${post.title}\nby ${post.author || "DevilJO"}\n\n${post.body}`;
+      if (!navigator.clipboard) {
+        showToast("Copy is unavailable in this browser.");
+        return;
+      }
+
+      navigator.clipboard.writeText(text)
+        .then(() => showToast("Copied to clipboard."))
+        .catch(() => showToast("Copy is unavailable in this browser."));
+    }
+
+    function escapeHtml(value) {
+      return String(value || "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function toCard(post) {
+      const tags = (post.tags || [])
+        .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
+        .join("");
+      const media = post.type === "photo"
+        ? `<div class="card-media"><img src="${escapeHtml(post.image || fallbackPhoto)}" alt="${escapeHtml(post.title)}"></div>`
+        : "";
+      const icon = post.type === "photo" ? "camera" : "book-open";
+      const liked = post.liked ? "active" : "";
+      const likedLabel = post.liked ? "Remove from favorites" : "Add to favorites";
+      const background = post.type === "poem" && post.background
+        ? ` style="background-image: linear-gradient(rgba(255, 253, 248, 0.86), rgba(255, 253, 248, 0.94)), url('${escapeHtml(post.background)}')"`
+        : "";
+      const backgroundClass = post.type === "poem" && post.background ? " has-poem-background" : "";
+
+      return `
+        <article class="card ${post.type}${backgroundClass}" data-post-id="${escapeHtml(post.id)}"${background}>
+          ${media}
+          <div class="card-body">
+            <div class="meta">
+              <span><i data-lucide="${icon}" aria-hidden="true"></i> ${post.type === "photo" ? "Photo" : "Poem"}</span>
+              <span>${escapeHtml(post.author || "DevilJO")}</span>
+            </div>
+            <h3>${escapeHtml(post.title)}</h3>
+            <p class="excerpt">${escapeHtml(post.body)}</p>
+            <div class="tags">${tags}</div>
+            <div class="card-actions">
+              <button class="icon-button ${liked}" type="button" data-action="like" aria-label="${likedLabel}" title="${likedLabel}">
+                <i data-lucide="heart" aria-hidden="true"></i>
+              </button>
+              <button class="icon-button" type="button" data-action="copy" aria-label="Copy piece" title="Copy piece">
+                <i data-lucide="copy" aria-hidden="true"></i>
+              </button>
+              <button class="icon-button danger" type="button" data-action="delete" aria-label="Delete piece" title="Delete piece">
+                <i data-lucide="trash-2" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    document.querySelectorAll("[data-type]").forEach((button) => {
+      button.addEventListener("click", () => setType(button.dataset.type));
+    });
+
+    document.querySelectorAll("[data-filter]").forEach((button) => {
+      button.addEventListener("click", () => setFilter(button.dataset.filter));
+    });
+
+    document.querySelectorAll("[data-nav-filter]").forEach((link) => {
+      link.addEventListener("click", () => setFilter(link.dataset.navFilter));
+    });
+
+    searchInput.addEventListener("input", (event) => {
+      state.query = event.target.value.trim();
+      renderPosts();
+    });
+
+    [titleInput, authorInput, tagsInput, bodyInput].forEach((input) => {
+      input.addEventListener("input", updatePreview);
+    });
+
+    imageInput.addEventListener("input", () => {
+      if (imageInput.value.trim()) {
+        imageUploadInput.value = "";
+        clearAttachment();
+      }
+      updatePreview();
+    });
+
+    imageUploadInput.addEventListener("change", (event) => {
+      readAttachment(event.target.files[0]);
+    });
+
+    previewToggle.addEventListener("click", () => {
+      setPreviewVisible(!state.previewVisible);
+    });
+
+    poemBackgroundInput.addEventListener("change", (event) => {
+      readPoemBackground(event.target.files[0]);
+    });
+
+    clearPoemBackgroundButton.addEventListener("click", clearPoemBackground);
+
+    document.querySelector("#promptButton").addEventListener("click", () => {
+      bodyInput.placeholder = prompts[Math.floor(Math.random() * prompts.length)];
+      bodyInput.focus();
+      showToast("Fresh prompt added to the text box.");
+    });
+
+    collectionViews.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-action]");
+      if (!button) {
+        return;
+      }
+
+      const card = button.closest("[data-post-id]");
+      if (!card) {
+        return;
+      }
+
+      const id = card.dataset.postId;
+      const actions = {
+        like: toggleLike,
+        copy: copyPost,
+        delete: deletePost
+      };
+      if (actions[button.dataset.action]) {
+        actions[button.dataset.action](id);
+      }
+    });
+
+    document.querySelector("#clearButton").addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      state.posts = samples;
+      state.query = "";
+      state.filter = "all";
+      searchInput.value = "";
+      setFilter("all");
+      form.reset();
+      clearAttachment();
+      clearPoemBackground();
+      setType("poem");
+      updatePreview();
+      showToast("Archive reset to the starter collection.");
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const post = {
+        id: createId(),
+        type: state.type,
+        title: String(formData.get("title")).trim(),
+        author: String(formData.get("author")).trim() || "DevilJO",
+        body: String(formData.get("body")).trim(),
+        tags: normalizeTags(String(formData.get("tags") || "")),
+        createdAt: new Date().toISOString()
+      };
+
+      if (state.type === "photo") {
+        post.image = state.pendingImage || String(formData.get("image")).trim() || fallbackPhoto;
+      } else if (state.pendingPoemBackground) {
+        post.background = state.pendingPoemBackground;
+      }
+
+      const previousPosts = state.posts;
+      state.posts = [post, ...state.posts];
+      if (!savePosts()) {
+        state.posts = previousPosts;
+        return;
+      }
+      form.reset();
+      clearAttachment();
+      clearPoemBackground();
+      setType("poem");
+      setFilter("all");
+      updatePreview();
+      showToast("Published to the collection.");
+    });
+
+    function initHeroSlider() {
+      const feature = document.querySelector('#heroSlider');
+      if (!feature) return;
+      const slides = feature.querySelectorAll('.slide');
+      const dotsContainer = feature.querySelector('#sliderDots');
+      if (slides.length <= 1) return;
+
+      let current = 0;
+      const dots = [];
+
+      // Create dots dynamically
+      slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = `dot ${i === 0 ? 'active' : ''}`;
+        dot.onclick = () => goTo(i);
+        dotsContainer.appendChild(dot);
+        dots.push(dot);
+      });
+
+      function goTo(index) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = index;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+        resetTimer();
+      }
+
+      let timer = setInterval(() => goTo((current + 1) % slides.length), 6000);
+      function resetTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => goTo((current + 1) % slides.length), 6000);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      setType("poem");
+      setPreviewVisible(true);
+      updatePreview();
+      renderPosts();
+      initHeroSlider();
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    });
+  </script>
+
+  <!-- Chatbot React Widget -->
+  <div id="chatbot-root"></div>
+  <script type="text/babel" src="chatbot.js"></script>
+
+  <a id="emergent-badge" target="_blank" href="https://app.emergent.sh/?utm_source=emergent-badge" style="display: inline-flex !important; box-sizing: border-box; width: 178px; height: 40px; padding: 8px 12px; align-items: center !important; gap: 8px; border-radius: 50px !important; background: #000 !important; position: fixed !important; bottom: 16px; left: 16px; text-decoration: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important; font-size: 12px !important; z-index: 9999 !important;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M15.5702 8.13142C15.7729 8.0412 16.0007 8.18878 15.9892 8.4103C15.8374 11.3192 14.0965 14.0405 11.2531 15.3065C8.40964 16.5725 5.2224 16.0453 2.95912 14.2117C2.78676 14.072 2.82955 13.804 3.03219 13.7137L4.95677 12.8568C5.04866 12.8159 5.15446 12.823 5.24204 12.8725C6.73377 13.7153 8.59176 13.8649 10.2772 13.1145C11.9626 12.3641 13.0947 10.8833 13.4665 9.21075C13.4883 9.11256 13.5539 9.02918 13.6457 8.98827L15.5702 8.13142Z" fill="white"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M15.3066 4.74698L15.5067 5.19653C15.5759 5.35178 15.5061 5.53366 15.3508 5.60278L1.29992 11.8586C1.14467 11.9278 0.962794 11.8579 0.893675 11.7027L0.701732 11.2716L0.693457 11.2531C-1.10317 7.21778 0.711626 2.49007 4.74692 0.693443C8.78221 -1.10318 13.51 0.711693 15.3066 4.74698ZM2.82356 8.55367C2.63552 8.63739 2.41991 8.51617 2.40853 8.31065C2.28373 6.05724 3.53858 3.85787 5.72286 2.88536C7.90715 1.91286 10.3813 2.45199 11.9724 4.05256C12.1175 4.19854 12.0633 4.43988 11.8753 4.5236L2.82356 8.55367Z" fill="white"/>
+    </svg>
+    <p style="color: #FFF !important; font-family: 'Inter', sans-serif !important; font-size: 13px !important; font-weight: 600 !important; line-height: 20px !important; margin: 0 !important; white-space: nowrap !important;">Made with Emergent</p>
+  </a>
+</body>
 </html>

@@ -1,14 +1,6 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "@/index.css";
-import App from "@/App";
-
+// Static site is served from /public/index.html.
+// React entry is intentionally a no-op so it doesn't inject CSS that overrides static styles.
 const rootEl = document.getElementById("root");
 if (rootEl) {
-  const root = ReactDOM.createRoot(rootEl);
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-  );
+  rootEl.style.display = "none";
 }

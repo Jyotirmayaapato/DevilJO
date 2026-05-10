@@ -21,18 +21,16 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+    <div className="App">
+      {/* This component can be used to wrap the flyer/studio logic in React later */}
+      <div style={{ padding: '20px', textAlign: 'center', borderBottom: '1px solid #222' }}>
+        <p className="kicker">Live Studio Mode</p>
+        <img 
+          src="https://images.unsplash.com/photo-1512446816042-444d641267d4?auto=format&fit=crop&w=1800&q=80" 
+          alt="DevilJO — Metal Type" 
+          style={{ maxWidth: '200px', margin: '20px auto', filter: 'grayscale(1)' }}
+        />
+      </div>
     </div>
   );
 };

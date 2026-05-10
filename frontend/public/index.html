@@ -56,12 +56,14 @@
         </div>
       </header>
 
+      <div id="root"></div>
+
       <div class="content">
-        <section class="intro animate-entry" aria-label="Creative studio" style="animation-delay: 0.1s;">
+        <section class="flyer-section animate-entry" aria-label="Flyer" style="animation-delay: 0.1s;">
           <article class="feature" id="heroSlider" data-testid="hero-slider">
             <!-- Slide 1: Poems -->
             <div class="slide active">
-              <img src="https://images.unsplash.com/photo-1499209974431-9dac3adaf477?auto=format&fit=crop&w=1800&q=80" alt="Soft light across a wall">
+              <img src="https://images.unsplash.com/photo-1512446816042-444d641267d4?auto=format&fit=crop&w=1800&q=80" alt="Vintage metal letterpress type blocks">
               <div class="slide-overlay"></div>
               <div class="feature-copy">
                 <h1>Devil<span class="accent">/</span>JO</h1>
@@ -125,89 +127,89 @@
             </div>
             <div class="slider-dots" id="sliderDots"></div>
           </article>
+        </section>
 
-          <section class="composer" id="studio" aria-labelledby="composerTitle">
-            <div class="section-title">
-              <div>
-                <p class="eyebrow">— The Studio</p>
-                <h2 id="composerTitle">Compose your piece</h2>
+        <section class="composer animate-entry" id="studio" aria-labelledby="composerTitle" style="animation-delay: 0.2s;">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">— The Studio</p>
+              <h2 id="composerTitle">Compose your piece</h2>
+            </div>
+            <div class="segmented" aria-label="Post type">
+              <button class="active" type="button" data-type="poem" data-testid="composer-type-poem">Poem</button>
+              <button type="button" data-type="photo" data-testid="composer-type-photo">Photo</button>
+            </div>
+          </div>
+
+          <form class="form-grid" id="postForm">
+            <label>
+              Title
+              <input id="titleInput" name="title" required maxlength="80" placeholder="Monsoon at the window">
+            </label>
+            <div class="form-row">
+              <label>
+                Author
+                <input id="authorInput" name="author" maxlength="40" placeholder="DevilJO">
+              </label>
+              <label>
+                Tags
+                <input id="tagsInput" name="tags" maxlength="80" placeholder="rain, memory, street">
+              </label>
+            </div>
+            <div class="photo-fields" id="imageField">
+              <label>
+                Photo URL
+                <input id="imageInput" name="image" type="url" placeholder="https://images.unsplash.com/...">
+              </label>
+              <label>
+                Local attachment
+                <input id="imageUploadInput" name="imageUpload" type="file" accept="image/*">
+                <span class="field-help" id="attachmentHelp"></span>
+              </label>
+            </div>
+            <label>
+              Text
+              <textarea id="bodyInput" name="body" required maxlength="700" placeholder="Write the poem, caption, or field note."></textarea>
+              <span class="field-help"><span id="bodyCount">0</span>/700 characters</span>
+            </label>
+            <div class="form-actions">
+              <button class="ghost-button" id="promptButton" type="button">
+                <i data-lucide="wand-sparkles" aria-hidden="true"></i>
+                Prompt
+              </button>
+              <button class="primary-button" type="submit">
+                <i data-lucide="send" aria-hidden="true"></i>
+                Publish
+              </button>
+            </div>
+          </form>
+
+          <aside class="preview" aria-label="Live post preview">
+            <div class="preview-top">
+              <span id="previewType">Poem preview</span>
+              <button class="preview-toggle" id="previewToggle" type="button" aria-label="Hide preview" aria-expanded="true">
+                <i data-lucide="eye" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="preview-content" id="previewContent">
+              <div class="poem-background-controls" id="poemBackgroundControls">
+                <label>
+                  Poem background template
+                  <input id="poemBackgroundInput" type="file" accept="image/*">
+                  <span class="field-help" id="poemBackgroundHelp"></span>
+                </label>
+                <button class="ghost-button" id="clearPoemBackgroundButton" type="button">Clear</button>
               </div>
-              <div class="segmented" aria-label="Post type">
-                <button class="active" type="button" data-type="poem" data-testid="composer-type-poem">Poem</button>
-                <button type="button" data-type="photo" data-testid="composer-type-photo">Photo</button>
+              <div class="preview-image" id="previewImage" hidden>
+                <img id="previewImageElement" alt="Selected photo preview">
+              </div>
+              <h3 id="previewTitle">Your title will appear here</h3>
+              <p id="previewBody">Start typing to see a live preview of your piece.</p>
+              <div class="tags" id="previewTags">
+                <span class="tag">draft</span>
               </div>
             </div>
-
-            <form class="form-grid" id="postForm">
-              <label>
-                Title
-                <input id="titleInput" name="title" required maxlength="80" placeholder="Monsoon at the window">
-              </label>
-              <div class="form-row">
-                <label>
-                  Author
-                  <input id="authorInput" name="author" maxlength="40" placeholder="DevilJO">
-                </label>
-                <label>
-                  Tags
-                  <input id="tagsInput" name="tags" maxlength="80" placeholder="rain, memory, street">
-                </label>
-              </div>
-              <div class="photo-fields" id="imageField">
-                <label>
-                  Photo URL
-                  <input id="imageInput" name="image" type="url" placeholder="https://images.unsplash.com/...">
-                </label>
-                <label>
-                  Local attachment
-                  <input id="imageUploadInput" name="imageUpload" type="file" accept="image/*">
-                  <span class="field-help" id="attachmentHelp"></span>
-                </label>
-              </div>
-              <label>
-                Text
-                <textarea id="bodyInput" name="body" required maxlength="700" placeholder="Write the poem, caption, or field note."></textarea>
-                <span class="field-help"><span id="bodyCount">0</span>/700 characters</span>
-              </label>
-              <div class="form-actions">
-                <button class="ghost-button" id="promptButton" type="button">
-                  <i data-lucide="wand-sparkles" aria-hidden="true"></i>
-                  Prompt
-                </button>
-                <button class="primary-button" type="submit">
-                  <i data-lucide="send" aria-hidden="true"></i>
-                  Publish
-                </button>
-              </div>
-            </form>
-
-            <aside class="preview" aria-label="Live post preview">
-              <div class="preview-top">
-                <span id="previewType">Poem preview</span>
-                <button class="preview-toggle" id="previewToggle" type="button" aria-label="Hide preview" aria-expanded="true">
-                  <i data-lucide="eye" aria-hidden="true"></i>
-                </button>
-              </div>
-              <div class="preview-content" id="previewContent">
-                <div class="poem-background-controls" id="poemBackgroundControls">
-                  <label>
-                    Poem background template
-                    <input id="poemBackgroundInput" type="file" accept="image/*">
-                    <span class="field-help" id="poemBackgroundHelp"></span>
-                  </label>
-                  <button class="ghost-button" id="clearPoemBackgroundButton" type="button">Clear</button>
-                </div>
-                <div class="preview-image" id="previewImage" hidden>
-                  <img id="previewImageElement" alt="Selected photo preview">
-                </div>
-                <h3 id="previewTitle">Your title will appear here</h3>
-                <p id="previewBody">Start typing to see a live preview of your piece.</p>
-                <div class="tags" id="previewTags">
-                  <span class="tag">draft</span>
-                </div>
-              </div>
-            </aside>
-          </section>
+          </aside>
         </section>
 
         <section id="collection" class="section-shell animate-entry" aria-labelledby="collectionTitle" style="animation-delay: 0.3s;">

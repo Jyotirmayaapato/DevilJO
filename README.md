@@ -1,6 +1,6 @@
 # DevilJO — The Obsidian Gallery
 
-**DevilJO** is a brutalist digital anthology designed for publishing poetry and photography. It combines a high-contrast editorial frontend with a robust FastAPI backend and integrated AI assistance.
+**DevilJO** is a modern digital anthology designed for publishing poetry and photography. It is a standalone, local-first application featuring a professional, high-performance interface and integrated AI assistance.
 
 ## 🖋️ Project Overview (Local Edition)
 
@@ -10,9 +10,9 @@ The platform serves as a "living archive" where users can compose and view two p
 
 ## 🚀 Features
 
-- **Studio (Composer):** A sophisticated React-based editor with dual modes (Poem/Photo) and real-time previewing.
+- **Living Archive:** A client-side repository for creative works with dual modes (Verse/Frames) and real-time previewing.
 - **AI Assistant:** An integrated chatbot powered by Lyzr AI (`chatbot.js`) to assist with creative prompts and navigation.
-- **Brutalist Design System:** Custom-built CSS focusing on typography (Cormorant Garamond), film grain effects, and high-contrast dark modes.
+- **Professional Design System:** A clean, typography-first interface utilizing modern sans-serif fonts and high-contrast dark modes for maximum legibility.
 - **Advanced Health Monitoring:** Custom Webpack plugins providing detailed `/health`, `/health/ready`, and `/health/live` endpoints.
 
 ## 🛠️ Tech Stack

@@ -20,12 +20,12 @@ const ChatButton = ({ isOpen, toggle }) => (
 const ChatHeader = ({ onClose, onReset }) => (
   <div className="p-5 bg-[#050505] text-[#F4F4F0] flex justify-between items-center border-b border-[#222222]">
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 bg-[#FF3B30] flex items-center justify-center font-bold text-lg" style={{fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic'}}>D</div>
+      <div className="w-10 h-10 bg-[#FF3B30] flex items-center justify-center font-bold text-lg">D</div>
       <div>
-        <h3 className="text-sm font-medium leading-none tracking-tight" style={{fontFamily: "'Cormorant Garamond', serif"}}>DevilJO Assistant</h3>
+        <h3 className="text-sm font-semibold leading-none tracking-tight">DevilJO Assistant</h3>
         <div className="flex items-center gap-1.5 mt-1.5">
           <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-          <span className="text-[9px] opacity-60 uppercase tracking-[0.25em] font-mono" style={{fontFamily: "'IBM Plex Mono', monospace"}}>Online</span>
+          <span className="text-[9px] opacity-60 uppercase tracking-[0.2em] font-medium">Online</span>
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@ const MessageList = ({ messages, isTyping }) => {
           }`}>
             {msg.text}
           </div>
-          <span className="text-[9px] text-[#555555] mt-1.5 px-1 uppercase tracking-[0.2em]" style={{fontFamily: "'IBM Plex Mono', monospace"}}>
+          <span className="text-[9px] text-[#555555] mt-1.5 px-1 uppercase tracking-[0.1em] font-mono">
             {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>
         </div>

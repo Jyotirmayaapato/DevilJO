@@ -1,5 +1,42 @@
 const { useState, useEffect, useRef } = React;
 
+const CHAT_STORAGE_KEY = 'deviljo_chat_v2';
+const LYZR_SESSION_STORAGE_KEY = 'deviljo_lyzr_session_id';
+const LYZR_AGENT_ID = '69ff1248d088be8556be0eff';
+
+function createLyzrSessionId() {
+  const suffix = window.crypto && typeof window.crypto.randomUUID === 'function'
+    ? window.crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+  return `${LYZR_AGENT_ID}-${suffix}`;
+}
+
+function getStoredLyzrSessionId() {
+  const saved = sessionStorage.getItem(LYZR_SESSION_STORAGE_KEY);
+  if (saved) {
+    return saved;
+  }
+
+  const sessionId = createLyzrSessionId();
+  sessionStorage.setItem(LYZR_SESSION_STORAGE_KEY, sessionId);
+  return sessionId;
+}
+
+function extractLyzrReply(data) {
+  return data?.response
+    || data?.answer
+    || data?.message
+    || data?.data?.response
+    || data?.data?.answer
+    || data?.data?.message
+    || data?.outputs?.response
+    || data?.outputs?.answer
+    || data?.result?.response
+    || data?.result?.answer
+    || "";
+}
+
 // --- Components ---
 
 const ChatButton = ({ isOpen, toggle }) => (
@@ -116,8 +153,9 @@ const ChatInput = ({ onSend, isOpen }) => {
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [lyzrSessionId, setLyzrSessionId] = useState(getStoredLyzrSessionId);
   const [messages, setMessages] = useState(() => {
-    const saved = sessionStorage.getItem('deviljo_chat_v2');
+    const saved = sessionStorage.getItem(CHAT_STORAGE_KEY);
     return saved ? JSON.parse(saved) : [
       { text: "How Can I assist you", sender: 'bot', timestamp: new Date() }
     ];
@@ -132,7 +170,7 @@ const ChatWidget = () => {
   }, []);
 
   useEffect(() => {
-    sessionStorage.setItem('deviljo_chat_v2', JSON.stringify(messages));
+    sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
   }, [messages]);
 
   const handleSend = async (text) => {
@@ -148,16 +186,21 @@ const ChatWidget = () => {
           'x-api-key': 'sk-default-MR5RebecDIKFnHRSdcZmPBzitJhScmT7'
         },
         body: JSON.stringify({
-          user_id: "jyotiapato@gmail.com",
-          agent_id: "69ff1248d088be8556be0eff",
-          session_id: "69ff1248d088be8556be0eff-5b70ptbag9",
+          user_id: 'jyotiapato@gmail.com',
+          agent_id: LYZR_AGENT_ID,
+          session_id: lyzrSessionId,
           message: text
         })
       });
+
+      if (!response.ok) {
+        throw new Error(`Lyzr request failed with ${response.status}`);
+      }
       
       const data = await response.json();
+      const reply = extractLyzrReply(data);
       setMessages(prev => [...prev, { 
-        text: data.response || "I'm having trouble connecting to my creative archive right now.", 
+        text: reply || "I'm having trouble connecting to my creative archive right now.", 
         sender: 'bot', 
         timestamp: new Date() 
       }]);
@@ -169,10 +212,13 @@ const ChatWidget = () => {
   };
 
   const handleReset = () => {
+    const sessionId = createLyzrSessionId();
+    sessionStorage.setItem(LYZR_SESSION_STORAGE_KEY, sessionId);
+    setLyzrSessionId(sessionId);
     setMessages([
       { text: "How Can I assist you", sender: 'bot', timestamp: new Date() }
     ]);
-    sessionStorage.removeItem('deviljo_chat_v2');
+    sessionStorage.removeItem(CHAT_STORAGE_KEY);
   };
 
   return (

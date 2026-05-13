@@ -156,7 +156,19 @@
                 <input id="tagsInput" name="tags" maxlength="80" placeholder="rain, memory, street">
               </label>
             </div>
-            <div class="photo-fields" id="imageField">
+            <div class="attachment-fields" id="poemBackgroundControls">
+              <label>
+                Poem background URL
+                <input id="poemBackgroundUrlInput" name="poemBackgroundUrl" type="url" placeholder="https://images.unsplash.com/...">
+              </label>
+              <label>
+                Local attachment
+                <input id="poemBackgroundInput" type="file" accept="image/*">
+                <span class="field-help" id="poemBackgroundHelp"></span>
+              </label>
+              <button class="ghost-button" id="clearPoemBackgroundButton" type="button" hidden>Remove attachment</button>
+            </div>
+            <div class="attachment-fields photo-fields" id="imageField">
               <label>
                 Photo URL
                 <input id="imageInput" name="image" type="url" placeholder="https://images.unsplash.com/...">
@@ -192,14 +204,6 @@
               </button>
             </div>
             <div class="preview-content" id="previewContent">
-              <div class="poem-background-controls" id="poemBackgroundControls">
-                <label>
-                  Poem background template
-                  <input id="poemBackgroundInput" type="file" accept="image/*">
-                  <span class="field-help" id="poemBackgroundHelp"></span>
-                </label>
-                <button class="ghost-button" id="clearPoemBackgroundButton" type="button">Clear</button>
-              </div>
               <div class="preview-image" id="previewImage" hidden>
                 <img id="previewImageElement" alt="Selected photo preview">
               </div>
@@ -344,6 +348,7 @@
     const previewContent = document.querySelector("#previewContent");
     const previewType = document.querySelector("#previewType");
     const poemBackgroundControls = document.querySelector("#poemBackgroundControls");
+    const poemBackgroundUrlInput = document.querySelector("#poemBackgroundUrlInput");
     const poemBackgroundInput = document.querySelector("#poemBackgroundInput");
     const poemBackgroundHelp = document.querySelector("#poemBackgroundHelp");
     const clearPoemBackgroundButton = document.querySelector("#clearPoemBackgroundButton");
@@ -393,6 +398,7 @@
     function setType(type) {
       state.type = type;
       imageField.hidden = type !== "photo";
+      poemBackgroundControls.hidden = type !== "poem";
       document.querySelectorAll("[data-type]").forEach((button) => {
         button.classList.toggle("active", button.dataset.type === type);
       });
@@ -481,13 +487,13 @@
       const body = bodyInput.value.trim() || "Start typing to see a live preview of your piece.";
       const tags = normalizeTags(tagsInput.value);
       const photoSource = getDraftImage();
-      const hasPoemBackground = state.type === "poem" && Boolean(state.pendingPoemBackground);
+      const poemBackgroundSource = getDraftPoemBackground();
+      const hasPoemBackground = state.type === "poem" && Boolean(poemBackgroundSource);
       bodyCount.textContent = bodyInput.value.length;
       previewType.textContent = state.type === "photo" ? "Photo preview" : "Poem preview";
-      poemBackgroundControls.hidden = state.type !== "poem";
       preview.classList.toggle("has-poem-background", hasPoemBackground);
       preview.style.backgroundImage = hasPoemBackground
-        ? `linear-gradient(rgba(255, 253, 248, 0.82), rgba(255, 253, 248, 0.9)), url("${state.pendingPoemBackground}")`
+        ? `linear-gradient(rgba(255, 253, 248, 0.82), rgba(255, 253, 248, 0.9)), url("${poemBackgroundSource}")`
         : "";
       previewImage.hidden = state.type !== "photo" || !photoSource;
       previewImageElement.src = photoSource || "";
@@ -502,21 +508,26 @@
       return state.pendingImage || imageInput.value.trim();
     }
 
+    function getDraftPoemBackground() {
+      return state.pendingPoemBackground || poemBackgroundUrlInput.value.trim();
+    }
+
     function clearAttachment() {
       state.pendingImage = "";
       attachmentHelp.textContent = "";
     }
 
-    function clearPoemBackground() {
+    function clearPoemBackgroundAttachment() {
       state.pendingPoemBackground = "";
       poemBackgroundInput.value = "";
       poemBackgroundHelp.textContent = "";
+      clearPoemBackgroundButton.hidden = true;
       updatePreview();
     }
 
     function readPoemBackground(file) {
       if (!file) {
-        clearPoemBackground();
+        clearPoemBackgroundAttachment();
         return;
       }
 
@@ -536,13 +547,15 @@
 
       const reader = new FileReader();
       reader.addEventListener("load", () => {
+        poemBackgroundUrlInput.value = "";
         state.pendingPoemBackground = String(reader.result || "");
         poemBackgroundHelp.textContent = file.name;
+        clearPoemBackgroundButton.hidden = false;
         updatePreview();
         showToast("Poem background applied.");
       });
       reader.addEventListener("error", () => {
-        clearPoemBackground();
+        clearPoemBackgroundAttachment();
         showToast("Could not read that background.");
       });
       reader.readAsDataURL(file);
@@ -713,6 +726,16 @@
       readAttachment(event.target.files[0]);
     });
 
+    poemBackgroundUrlInput.addEventListener("input", () => {
+      if (poemBackgroundUrlInput.value.trim()) {
+        poemBackgroundInput.value = "";
+        state.pendingPoemBackground = "";
+        poemBackgroundHelp.textContent = "";
+        clearPoemBackgroundButton.hidden = true;
+      }
+      updatePreview();
+    });
+
     previewToggle.addEventListener("click", () => {
       setPreviewVisible(!state.previewVisible);
     });
@@ -721,7 +744,7 @@
       readPoemBackground(event.target.files[0]);
     });
 
-    clearPoemBackgroundButton.addEventListener("click", clearPoemBackground);
+    clearPoemBackgroundButton.addEventListener("click", clearPoemBackgroundAttachment);
 
     document.querySelector("#promptButton").addEventListener("click", () => {
       bodyInput.placeholder = prompts[Math.floor(Math.random() * prompts.length)];
@@ -760,7 +783,7 @@
       setFilter("all");
       form.reset();
       clearAttachment();
-      clearPoemBackground();
+      clearPoemBackgroundAttachment();
       setType("poem");
       updatePreview();
       showToast("Archive reset to the starter collection.");
@@ -781,8 +804,11 @@
 
       if (state.type === "photo") {
         post.image = state.pendingImage || String(formData.get("image")).trim() || fallbackPhoto;
-      } else if (state.pendingPoemBackground) {
-        post.background = state.pendingPoemBackground;
+      } else {
+        const poemBackground = state.pendingPoemBackground || String(formData.get("poemBackgroundUrl")).trim();
+        if (poemBackground) {
+          post.background = poemBackground;
+        }
       }
 
       const previousPosts = state.posts;
@@ -793,7 +819,7 @@
       }
       form.reset();
       clearAttachment();
-      clearPoemBackground();
+      clearPoemBackgroundAttachment();
       setType("poem");
       setFilter("all");
       updatePreview();

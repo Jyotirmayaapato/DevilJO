@@ -594,13 +594,20 @@ input:focus, textarea:focus, select:focus {
   gap: 24px;
 }
 
-.photo-fields {
+.attachment-fields {
   display: grid;
   grid-template-columns: 1fr;
   gap: 18px;
   padding: 18px;
   background: var(--surface-2);
   border: 1px solid var(--line);
+}
+
+.attachment-fields .ghost-button {
+  width: fit-content;
+  height: 32px;
+  padding: 0 12px;
+  font-size: 9px;
 }
 
 .field-help {
@@ -656,16 +663,6 @@ input:focus, textarea:focus, select:focus {
 }
 .preview-toggle:hover { color: var(--text); border-color: var(--text); }
 .preview-toggle svg { width: 14px; height: 14px; }
-
-.poem-background-controls {
-  margin-bottom: 18px;
-  padding: 14px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
 
 .preview-image {
   margin-bottom: 18px;
